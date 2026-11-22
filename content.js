@@ -112,7 +112,7 @@ Start with three quick predictions. They aren't scored. Guess first, then see ho
         {
           type: "video",
           title: "The cave clap",
-          src: "videos/video1.mp4",
+          src: "https://youtu.be/TptzGXf_TyA",
           duration: "1:15",
           notes: "In the cave: clap, let the echo land. Explain half the round trip times the speed of sound. Bats live here and do this constantly. Swap the clap for a radio pulse: radar is echolocation with light.",
         },
