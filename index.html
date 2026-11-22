@@ -592,7 +592,7 @@ td.complete { color: var(--good); font-weight: 600; }
     } else {
       const frame = el("div", { class: "frame" });
       if (srcInfo.kind === "iframe") {
-        frame.appendChild(el("iframe", { src: srcInfo.url, title: st.title || "Video", allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen", allowfullscreen: true, loading: "lazy" }));
+        frame.appendChild(el("iframe", { src: srcInfo.url, title: st.title || "Video", allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen", allowfullscreen: true, loading: "lazy", referrerpolicy: "strict-origin-when-cross-origin" }));
         const a = el("span", { class: "extra" });
         a.appendChild(el("a", { href: srcInfo.link, target: "_blank", rel: "noopener", text: "Video not showing? Watch it on " + srcInfo.site }));
         cap.appendChild(a);

@@ -40,8 +40,8 @@
 
 window.COURSE = {
   id: "radar-from-the-cave-v1", // change this if you want everyone's saved progress to reset
-  title: "Radar from the Cave",
-  subtitle: "The fundamentals of radar, explained through echoes and sound",
+  title: "Radar!",
+  subtitle: "Radar but audible",
 
   settings: {
     requireAnswerToContinue: false, // true = learners must answer every question in a section before moving to the next
@@ -112,9 +112,7 @@ Start with three quick predictions. They aren't scored. Guess first, then see ho
         {
           type: "video",
           title: "The cave clap",
-          src: "https://youtu.be/TptzGXf_TyA",
-          duration: "1:15",
-          notes: "In the cave: clap, let the echo land. Explain half the round trip times the speed of sound. Bats live here and do this constantly. Swap the clap for a radio pulse: radar is echolocation with light.",
+          src: "https://youtu.be/TptzGXf_TyA"
         },
         {
           type: "text",
