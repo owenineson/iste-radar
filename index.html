@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar from the Cave</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=STIX+Two+Text:ital@0;1&display=swap" rel="stylesheet">
+<!--
+  LESSON ENGINE
+  You normally don't need to edit this file. All lesson content lives in content.js.
+  To change fonts, colours or spacing, edit the tokens in the :root block below.
+-->
+<style>
+:root {
+  /* Layout: a textbook page. Contents in the left margin, one reading column, sections scroll continuously.
+     Black on white for structure; colour only where it carries meaning. */
+  --paper: #ffffff;
+  --ink: #141414;
+  --muted: #666b70;
+  --hair: #e1e3e5;
+  --wash: #f4f5f6;
+
+  --accent: #1f5fbf;        /* buttons, links, your selected answer, notes */
+  --accent-soft: #ebf2fc;
+  --good: #1a7f37;          /* correct answers, completed sections */
+  --good-soft: #e9f6ed;
+  --bad: #c42b2b;           /* wrong answers */
+  --bad-soft: #fdeeee;
+  --warn: #a35c00;          /* hints and predictions */
+  --warn-soft: #fff4e2;
+  --signal: #1f5fbf;        /* keyboard focus outline */
+
+  --text: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --math: "STIX Two Text", "Cambria Math", "Times New Roman", serif;
+
+  --measure: 40rem;
+  --margin: 210px;          /* contents column */
+  --gutter: 72px;
+  --frame: calc(var(--margin) + var(--gutter) + var(--measure));
+  --body: 1.125rem;
+  --small: 0.9rem;
+  --tiny: 0.8rem;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--paper); }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--text); font-size: var(--body); line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+button, input { font: inherit; color: inherit; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; font-family: var(--display); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em; }
+p { margin: 0; }
+
+/* ---------- Masthead ---------- */
+.masthead { border-bottom: 1px solid var(--ink); }
+.masthead-inner {
+  max-width: calc(var(--frame) + 64px); margin: 0 auto; padding: 16px 32px;
+  display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+}
+.masthead h1 { font-size: 1.2rem; }
+.masthead .sub { font-size: var(--small); color: var(--muted); }
+.masthead .tools { margin-left: auto; display: flex; gap: 20px; }
+
+/* ---------- Text buttons and buttons ---------- */
+.link {
+  background: none; border: 0; padding: 0; cursor: pointer; color: var(--accent);
+  font-size: var(--small); font-weight: 600;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+}
+.link:hover { text-decoration-thickness: 2px; }
+.link.muted { color: var(--muted); font-weight: 500; }
+.masthead .link { color: var(--ink); }
+.btn {
+  background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: 3px;
+  padding: 10px 20px; cursor: pointer; font-family: var(--display); font-size: var(--small); font-weight: 600;
+}
+.btn:hover { background: color-mix(in srgb, var(--accent) 85%, #000); }
+.btn[disabled] { background: var(--hair); border-color: var(--hair); color: var(--muted); cursor: not-allowed; }
+.contents-toggle { display: none; }
+
+/* ---------- Page ---------- */
+.page {
+  max-width: calc(var(--frame) + 64px); margin: 0 auto; padding: 56px 32px 120px;
+  display: grid; grid-template-columns: var(--margin) minmax(0, var(--measure)); gap: var(--gutter);
+}
+
+/* ---------- Contents ---------- */
+.contents { position: sticky; top: 32px; align-self: start; max-height: calc(100vh - 64px); overflow-y: auto; }
+.contents h2 { font-size: var(--tiny); font-weight: 600; color: var(--muted); margin-bottom: 12px; letter-spacing: 0; }
+.contents ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.contents li { border-bottom: 1px solid var(--hair); }
+.contents li button {
+  width: 100%; background: none; border: 0; padding: 8px 6px 8px 0; cursor: pointer; text-align: left;
+  display: grid; grid-template-columns: 1.8em 1fr auto; gap: 6px; align-items: baseline; font-size: var(--small); line-height: 1.35;
+}
+.contents li button:hover .c-name { text-decoration: underline; text-underline-offset: 3px; }
+.contents .c-num { color: var(--muted); font-variant-numeric: tabular-nums; }
+.contents .c-done { font-weight: 700; color: var(--good); }
+.contents li.current button { font-weight: 700; box-shadow: inset -3px 0 0 var(--accent); }
+.contents li.current .c-num, .contents li.current .c-name { color: var(--accent); }
+.contents-foot { margin-top: 20px; display: grid; gap: 10px; justify-items: start; }
+
+/* ---------- Section opener ---------- */
+.opener { border-top: 4px solid var(--ink); padding-top: 18px; display: grid; gap: 6px; }
+.opener .num { font-family: var(--display); font-size: 4.5rem; font-weight: 300; line-height: 0.9; letter-spacing: -0.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.opener h2 { font-size: 2.5rem; letter-spacing: -0.025em; }
+.opener .meta { font-size: var(--small); color: var(--muted); margin-top: 6px; }
+
+/* ---------- Steps ---------- */
+.steps { display: grid; gap: 56px; margin-top: 48px; }
+.step { min-width: 0; display: grid; gap: 16px; scroll-margin-top: 24px; }
+.step > h3 { font-size: 1.45rem; }
+.prose { display: grid; gap: 14px; }
+.prose ul, .prose ol { margin: 0; padding-left: 1.25em; display: grid; gap: 6px; }
+.prose li::marker { color: var(--muted); }
+.prose .note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 12px 16px; }
+.prose .formula-key { font-size: var(--small); color: var(--muted); }
+.math { font-family: var(--math); font-size: 1.08em; white-space: nowrap; }
+.formula {
+  font-family: var(--math); font-size: 1.45rem; padding: 10px 0; display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 12px 56px; align-items: center; overflow-x: auto;
+}
+.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 0.15em; }
+.frac > span:first-child { border-bottom: 1px solid currentColor; padding: 0 0.2em; }
+.frac > span:last-child { padding: 0 0.2em; }
+.formula .frac { font-size: 0.92em; }
+sub, sup { font-size: 0.7em; line-height: 0; }
+.label { font-family: var(--display); font-size: var(--small); font-weight: 700; color: var(--accent); }
+.label.prediction { color: var(--warn); }
+.label .aside { font-family: var(--text); font-weight: 400; color: var(--muted); margin-left: 8px; }
+
+/* ---------- Figures (video) ---------- */
+figure { margin: 0; display: grid; gap: 10px; }
+.frame { position: relative; aspect-ratio: 16 / 9; width: 100%; background: #000; }
+.frame video, .frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+figcaption { font-size: var(--small); line-height: 1.45; display: grid; gap: 4px; }
+figcaption .cap b { font-family: var(--display); font-weight: 700; margin-right: 6px; }
+figcaption .extra { color: var(--muted); }
+.slot {
+  aspect-ratio: 16 / 9; width: 100%; border: 1px solid var(--ink); background: var(--paper);
+  display: grid; align-content: center; justify-items: center; gap: 14px; padding: 24px; text-align: center;
+  background-image: linear-gradient(to top right, transparent calc(50% - 0.5px), var(--hair) 50%, transparent calc(50% + 0.5px)),
+                    linear-gradient(to top left, transparent calc(50% - 0.5px), var(--hair) 50%, transparent calc(50% + 0.5px));
+}
+.slot .slot-title { font-family: var(--display); font-weight: 600; font-size: var(--small); background: var(--paper); padding: 4px 10px; }
+.slot .pick { font-size: var(--tiny); background: var(--paper); padding: 4px 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+.slot input[type="file"] { font-size: var(--tiny); max-width: 220px; }
+
+/* ---------- Exercises ---------- */
+.exercise { border-left: 3px solid var(--accent); padding-left: 24px; display: grid; gap: 16px; }
+.exercise.is-prediction { border-left-color: var(--warn); }
+.exercise .prompt { font-size: 1.2rem; line-height: 1.5; font-weight: 500; }
+.options { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hair); }
+.options li { border-bottom: 1px solid var(--hair); }
+.option {
+  width: 100%; background: none; border: 0; padding: 12px 8px 12px 4px; cursor: pointer; text-align: left;
+  display: grid; grid-template-columns: 30px 1fr auto; gap: 14px; align-items: baseline;
+}
+.option:hover:not([disabled]) { background: var(--wash); }
+.option .key {
+  font-family: var(--display); font-size: var(--tiny); font-weight: 600; width: 26px; height: 26px; line-height: 24px;
+  border: 1px solid var(--ink); border-radius: 3px; text-align: center; align-self: center;
+}
+.option .mark { font-family: var(--display); font-size: var(--small); font-weight: 600; }
+.option[aria-checked="true"] { background: var(--accent-soft); }
+.option[aria-checked="true"] .key { background: var(--accent); color: #fff; border-color: var(--accent); }
+.option.is-right { background: var(--good-soft); }
+.option.is-right .key { background: var(--good); color: #fff; border-color: var(--good); }
+.option.is-right .mark { color: var(--good); }
+.option.is-right .mark::before { content: "\2713  Correct"; }
+.option.is-wrong { background: var(--bad-soft); }
+.option.is-wrong .key { background: var(--bad); color: #fff; border-color: var(--bad); }
+.option.is-wrong .text { text-decoration: line-through; text-decoration-color: var(--bad); color: var(--muted); }
+.option.is-wrong .mark { color: var(--bad); }
+.option.is-wrong .mark::before { content: "\2717"; }
+.option[disabled] { cursor: default; }
+.num-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+.num-row input {
+  width: 9ch; padding: 4px 2px; border: 0; border-bottom: 2px solid var(--ink); border-radius: 0; background: none;
+  font-family: var(--text); font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.num-row input:focus { outline: none; border-bottom-color: var(--accent); background: var(--accent-soft); }
+.num-row input.is-right { border-bottom-color: var(--good); color: var(--good); }
+.num-row input.is-wrong { border-bottom-color: var(--bad); color: var(--bad); }
+.num-row .unit { color: var(--muted); }
+.q-actions { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; }
+.hint { border-left: 3px solid var(--warn); background: var(--warn-soft); padding: 10px 16px; }
+.hint b { font-family: var(--display); color: var(--warn); margin-right: 6px; }
+.feedback { padding: 14px 18px; display: grid; gap: 6px; border-left: 3px solid var(--ink); background: var(--wash); }
+.feedback > strong { font-family: var(--display); font-size: 1rem; font-weight: 700; }
+.feedback.right { border-left-color: var(--good); background: var(--good-soft); }
+.feedback.right > strong { color: var(--good); }
+.feedback.wrong { border-left-color: var(--bad); background: var(--bad-soft); }
+.feedback.wrong > strong { color: var(--bad); }
+.feedback.info { border-left-color: var(--accent); background: var(--accent-soft); }
+.feedback.info > strong { color: var(--accent); }
+.feedback.predict { border-left-color: var(--warn); background: var(--warn-soft); }
+.feedback.predict > strong { color: var(--warn); }
+
+/* ---------- Activity ---------- */
+.checklist { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hair); }
+.checklist li { border-bottom: 1px solid var(--hair); }
+.checklist label { display: grid; grid-template-columns: 22px 1fr; gap: 14px; padding: 11px 0; cursor: pointer; align-items: start; }
+.checklist input {
+  appearance: none; -webkit-appearance: none; width: 18px; height: 18px; margin: 4px 0 0; border: 1.5px solid var(--ink); border-radius: 3px; cursor: pointer;
+}
+.checklist input:checked {
+  border-color: var(--good);
+  background: var(--good) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3 4.7-5' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E") center / 12px no-repeat;
+}
+.checklist input:checked + span { color: var(--muted); }
+
+/* ---------- Section navigation ---------- */
+.section-nav { margin-top: 80px; border-top: 1px solid var(--ink); padding-top: 16px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+.section-nav > .link { justify-self: start; }
+.next-block { background: none; border: 0; padding: 0; cursor: pointer; text-align: right; display: grid; gap: 2px; justify-items: end; }
+.next-block .k { font-size: var(--small); color: var(--muted); }
+.next-block .t { font-family: var(--display); font-size: 1.6rem; font-weight: 700; line-height: 1.2; color: var(--accent); letter-spacing: -0.015em; }
+.next-block:hover .t { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.next-block[disabled] { opacity: 0.4; cursor: not-allowed; }
+.next-block[disabled] .t { color: var(--muted); }
+.next-block[disabled]:hover .t { text-decoration: none; }
+.gate { font-size: var(--small); color: var(--warn); grid-column: 1 / -1; text-align: right; }
+
+/* ---------- Results and author view ---------- */
+.big { font-family: var(--display); font-size: 5rem; font-weight: 300; line-height: 1; letter-spacing: -0.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: var(--small); }
+th, td { text-align: left; padding: 9px 8px 9px 0; border-bottom: 1px solid var(--hair); vertical-align: baseline; }
+thead th { border-bottom: 1px solid var(--ink); font-family: var(--display); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.complete { color: var(--good); font-weight: 600; }
+.confirm { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; border-left: 3px solid var(--bad); background: var(--bad-soft); padding: 12px 16px; font-size: var(--small); }
+.confirm .btn { background: var(--bad); border-color: var(--bad); }
+.issues { margin: 0; padding-left: 1.2em; font-size: var(--small); display: grid; gap: 4px; }
+.issues li.err { color: var(--bad); }
+.issues li.warn { color: var(--warn); }
+.o-sec { display: grid; gap: 0; }
+.o-sec h3 { font-size: 1.2rem; padding-bottom: 8px; border-bottom: 1px solid var(--ink); display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.o-sec h3 small { font-family: var(--text); font-size: var(--tiny); font-weight: 400; color: var(--muted); letter-spacing: 0; }
+.o-step { display: grid; grid-template-columns: 92px 1fr auto; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--hair); font-size: var(--small); align-items: baseline; }
+.o-step .o-type { color: var(--muted); }
+.o-step .o-detail { color: var(--muted); margin-top: 2px; }
+.o-step .o-detail .ok { color: var(--good); font-weight: 600; }
+.o-step .o-missing { color: var(--warn); font-weight: 700; }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 900px) {
+  .masthead .sub { display: none; }
+  .contents-toggle { display: inline; }
+  .page { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 32px 20px 96px; max-width: 720px; }
+  .masthead-inner { max-width: 720px; padding: 14px 20px; }
+  .contents { display: none; position: static; max-height: none; margin-bottom: 40px; }
+  body.show-contents .contents { display: block; }
+  .opener .num { font-size: 3.4rem; }
+  .opener h2 { font-size: 1.9rem; }
+  .exercise { padding-left: 16px; }
+  .o-step { grid-template-columns: 1fr; gap: 4px; }
+  .slot { aspect-ratio: auto; min-height: 200px; }
+}
+@media print {
+  .contents, .masthead .tools, .section-nav { display: none; }
+  .page { display: block; }
+}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <h1 id="course-title">Lesson</h1>
+    <span class="sub" id="course-subtitle"></span>
+    <nav class="tools" aria-label="Lesson tools">
+      <button class="link contents-toggle" id="contents-toggle" type="button" aria-expanded="false" aria-controls="contents">Contents</button>
+      <button class="link" id="go-results" type="button">Results</button>
+    </nav>
+  </div>
+</header>
+
+<div class="page">
+  <nav class="contents" id="contents" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol id="contents-list"></ol>
+    <div class="contents-foot">
+      <button class="link muted" type="button" id="go-outline">Author view</button>
+    </div>
+  </nav>
+  <main id="main" aria-live="polite"></main>
+</div>
+
+<!-- Your lesson content. Edit content.js to change anything the learner sees. -->
+<script src="content.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     1. Setup
+     ========================================================= */
+  const COURSE = window.COURSE;
+  const main = document.getElementById("main");
+  if (!COURSE || !Array.isArray(COURSE.sections)) {
+    main.innerHTML = '<div class="opener"><h2>Content not found</h2><p>The page couldn’t load <code>content.js</code>, or it has a typo. Keep <code>content.js</code> in the same folder as this page, and check for a missing comma or quote near your last edit. Your browser’s developer console (F12) shows the line number.</p></div>';
+    return;
+  }
+
+  const SETTINGS = Object.assign({
+    requireAnswerToContinue: false,
+    allowRetry: true,
+    showHints: true,
+    numberTolerance: 0.03,
+    saveProgress: true,
+  }, COURSE.settings || {});
+
+  const theme = COURSE.theme || {};
+  if (theme.accent) document.documentElement.style.setProperty("--accent", theme.accent);
+  if (theme.signal) document.documentElement.style.setProperty("--signal", theme.signal);
+
+  document.title = COURSE.title || "Lesson";
+  document.getElementById("course-title").textContent = COURSE.title || "Lesson";
+  document.getElementById("course-subtitle").textContent = COURSE.subtitle || "";
+
+  const QUESTION_TYPES = ["choice", "truefalse", "number"];
+  const SECTIONS = COURSE.sections.map(function (sec, s) {
+    const id = String(sec.id || "section-" + (s + 1)).replace(/[^A-Za-z0-9-]/g, "-");
+    const title = sec.title || "Section " + (s + 1);
+    // A title like "3. Pulses" is split into its number and its name
+    const m = title.match(/^(\d+)[.)]\s+(.*)$/);
+    return {
+      id: id,
+      title: title,
+      num: m ? m[1] : "",
+      name: m ? m[2] : title,
+      steps: (sec.steps || []).map(function (st, i) {
+        return Object.assign({}, st, { key: st.id || id + ":" + i, isQ: QUESTION_TYPES.indexOf(st.type) >= 0 });
+      }),
+    };
+  });
+
+  /* =========================================================
+     2. State (saved in this browser only)
+     ========================================================= */
+  const STORE_KEY = "lesson:" + (COURSE.id || COURSE.title || "course");
+  let state = { pos: { s: 0, i: 0 }, view: "lesson", ans: {}, checks: {}, seen: {} };
+
+  function loadState() {
+    if (!SETTINGS.saveProgress) return;
+    try {
+      const raw = window.localStorage.getItem(STORE_KEY);
+      if (raw) state = Object.assign(state, JSON.parse(raw));
+    } catch (e) { /* storage unavailable: carry on without it */ }
+  }
+  function saveState() {
+    if (!SETTINGS.saveProgress) return;
+    try { window.localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+  function clampPos() {
+    const s = Math.min(Math.max(0, state.pos.s | 0), SECTIONS.length - 1);
+    const n = SECTIONS[s].steps.length;
+    state.pos = { s: s, i: Math.min(Math.max(0, state.pos.i | 0), Math.max(0, n - 1)) };
+  }
+
+  /* =========================================================
+     3. Text formatting (a small Markdown-like syntax)
+     ========================================================= */
+  function esc(t) {
+    return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  // Read a {...} group starting at position i (s[i] === "{"); returns [inner, endIndex]
+  function readGroup(s, i) {
+    let depth = 0;
+    for (let j = i; j < s.length; j++) {
+      if (s[j] === "{") depth++;
+      else if (s[j] === "}") { depth--; if (depth === 0) return [s.slice(i + 1, j), j + 1]; }
+    }
+    return [s.slice(i + 1), s.length];
+  }
+  // Maths: \frac{a}{b}, x_{sub}, x^{sup}, x_d, R^4
+  function mathHTML(src) {
+    let out = "";
+    let i = 0;
+    while (i < src.length) {
+      if (src.startsWith("\\frac", i)) {
+        let j = i + 5;
+        while (src[j] === " ") j++;
+        if (src[j] === "{") {
+          const a = readGroup(src, j);
+          let k = a[1];
+          while (src[k] === " ") k++;
+          if (src[k] === "{") {
+            const b = readGroup(src, k);
+            out += '<span class="frac"><span>' + mathHTML(a[0]) + "</span><span>" + mathHTML(b[0]) + "</span></span>";
+            i = b[1];
+            continue;
+          }
+        }
+      }
+      const c = src[i];
+      if ((c === "_" || c === "^") && i + 1 < src.length) {
+        const tag = c === "_" ? "sub" : "sup";
+        if (src[i + 1] === "{") {
+          const g = readGroup(src, i + 1);
+          out += "<" + tag + ">" + mathHTML(g[0]) + "</" + tag + ">";
+          i = g[1];
+        } else {
+          out += "<" + tag + ">" + esc(src[i + 1]) + "</" + tag + ">";
+          i += 2;
+        }
+        continue;
+      }
+      out += esc(c);
+      i++;
+    }
+    return out;
+  }
+  function inline(t, rawHTML) {
+    const keep = [];
+    let s = String(t).replace(/\$([^$\n]+?)\$/g, function (_, m) {
+      keep.push('<span class="math">' + mathHTML(m.trim()) + "</span>");
+      return "\u0000" + (keep.length - 1) + "\u0000";
+    });
+    if (!rawHTML) s = s.replace(/&(?![a-zA-Z#]\w*;)/g, "&amp;").replace(/<(?![a-zA-Z\/!])/g, "&lt;");
+    s = s
+      .replace(/\[([^\]]+)\]\((https?:[^)\s]+|[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/(^|[^*\w])\*([^*\n]+)\*(?!\w)/g, "$1<em>$2</em>");
+    return s.replace(/\u0000(\d+)\u0000/g, function (_, n) { return keep[+n]; });
+  }
+  function md(text) {
+    if (text == null) return "";
+    if (Array.isArray(text)) text = text.join("\n\n");
+    const blocks = String(text).replace(/\r/g, "").split(/\n\s*\n/);
+    return blocks.map(function (raw) {
+      const b = raw.trim();
+      if (!b) return "";
+      if (b.startsWith("$$")) {
+        const inner = b.replace(/^\$\$/, "").replace(/\$\$$/, "").trim();
+        return '<div class="formula" role="math">' + inner.split(/\s{3,}/).map(function (part) {
+          return "<span>" + mathHTML(part.trim()) + "</span>";
+        }).join("") + "</div>";
+      }
+      const lines = b.split("\n").map(function (l) { return l.trim(); });
+      if (lines.every(function (l) { return /^[-*] /.test(l); })) {
+        return "<ul>" + lines.map(function (l) { return "<li>" + inline(l.slice(2)) + "</li>"; }).join("") + "</ul>";
+      }
+      if (lines.every(function (l) { return /^\d+[.)] /.test(l); })) {
+        return "<ol>" + lines.map(function (l) { return "<li>" + inline(l.replace(/^\d+[.)] /, "")) + "</li>"; }).join("") + "</ol>";
+      }
+      if (lines.every(function (l) { return l.startsWith(">"); })) {
+        return '<div class="note">' + inline(lines.map(function (l) { return l.replace(/^>\s?/, ""); }).join(" ")) + "</div>";
+      }
+      if (b.startsWith("<")) return inline(b, true);
+      return "<p>" + inline(lines.join(" ")) + "</p>";
+    }).join("");
+  }
+  function el(tag, attrs, html) {
+    const e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "class") e.className = attrs[k];
+      else if (k === "text") e.textContent = attrs[k];
+      else if (k.startsWith("on")) e.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== false && attrs[k] != null) e.setAttribute(k, attrs[k] === true ? "" : attrs[k]);
+    });
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+
+  /* =========================================================
+     4. Numbers
+     ========================================================= */
+  // Accepts "30", "30 km", "3,430", "3.4e3", "3.4 × 10^3", "3.4x10^3"
+  function parseNumber(str) {
+    const s = String(str).trim().replace(/,/g, "").replace(/−/g, "-").replace(/\s+/g, "");
+    const m = s.match(/^([-+]?(?:\d+\.?\d*|\.\d+))(?:[eE]([-+]?\d+)|[×xX*]10\^?([-+]?\d+))?/);
+    if (!m) return NaN;
+    const exp = m[2] || m[3];
+    return parseFloat(m[1]) * (exp ? Math.pow(10, parseInt(exp, 10)) : 1);
+  }
+  function fmtNumber(n) {
+    if (!isFinite(n)) return String(n);
+    const abs = Math.abs(n);
+    if (abs !== 0 && (abs >= 1e7 || abs < 1e-3)) return n.toExponential(2).replace("e", " × 10^").replace("^+", "^");
+    return n.toLocaleString("en-GB", { maximumFractionDigits: 4 });
+  }
+  function isCloseEnough(value, answer, tol) {
+    if (answer === 0) return Math.abs(value) <= tol;
+    return Math.abs(value - answer) <= Math.abs(answer) * tol;
+  }
+
+  /* =========================================================
+     5. Progress helpers
+     ========================================================= */
+  function stepDone(st) {
+    if (st.isQ) { const a = state.ans[st.key]; return !!(a && a.done); }
+    return !!state.seen[st.key];
+  }
+  function sectionFraction(sec) {
+    if (!sec.steps.length) return 0;
+    return sec.steps.filter(stepDone).length / sec.steps.length;
+  }
+  function scoredQuestions() {
+    const list = [];
+    SECTIONS.forEach(function (sec, s) {
+      sec.steps.forEach(function (st, i) { if (st.isQ && st.scored !== false) list.push({ sec: sec, s: s, i: i, st: st }); });
+    });
+    return list;
+  }
+  function canAdvance() {
+    if (!SETTINGS.requireAnswerToContinue) return true;
+    return SECTIONS[state.pos.s].steps.every(function (st) { return !st.isQ || stepDone(st); });
+  }
+  function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
+
+  /* =========================================================
+     6. Contents
+     ========================================================= */
+  function renderContents() {
+    const list = document.getElementById("contents-list");
+    list.innerHTML = "";
+    SECTIONS.forEach(function (sec, s) {
+      const current = state.view === "lesson" && s === state.pos.s;
+      const li = el("li", { class: current ? "current" : "" });
+      const b = el("button", { type: "button", onclick: function () { goTo(s, 0); closeContents(); } });
+      b.appendChild(el("span", { class: "c-num", text: sec.num || "–" }));
+      b.appendChild(el("span", { class: "c-name", text: sec.name }));
+      const done = sectionFraction(sec) >= 1;
+      b.appendChild(el("span", { class: "c-done", text: done ? "✓" : "" }));
+      b.setAttribute("aria-label", sec.title + (done ? ", complete" : ""));
+      if (current) b.setAttribute("aria-current", "page");
+      li.appendChild(b);
+      list.appendChild(li);
+    });
+  }
+  function closeContents() {
+    document.body.classList.remove("show-contents");
+    document.getElementById("contents-toggle").setAttribute("aria-expanded", "false");
+  }
+
+  /* =========================================================
+     7. Step renderers
+     ========================================================= */
+  function videoSource(src) {
+    const s = String(src || "").trim();
+    if (!s) return null;
+    let m = s.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+    if (m) return { kind: "iframe", url: "https://www.youtube-nocookie.com/embed/" + m[1] + "?rel=0", link: "https://www.youtube.com/watch?v=" + m[1], site: "YouTube" };
+    m = s.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    if (m) return { kind: "iframe", url: "https://player.vimeo.com/video/" + m[1], link: "https://vimeo.com/" + m[1], site: "Vimeo" };
+    return { kind: "file", url: s };
+  }
+  function videoElement(url, st) {
+    const v = el("video", { controls: true, playsinline: true, preload: "metadata", src: url, poster: st.poster || null });
+    if (st.captions) v.appendChild(el("track", { kind: "captions", src: st.captions, srclang: "en", label: "English", default: true }));
+    return v;
+  }
+
+  function renderVideo(st, box, ctx) {
+    const fig = el("figure");
+    const srcInfo = videoSource(st.src);
+    const cap = el("figcaption");
+    const capLine = el("span", { class: "cap" });
+    capLine.innerHTML = "<b>Clip " + esc(ctx.label) + "</b>" + inline(st.title || "");
+    cap.appendChild(capLine);
+
+    if (!srcInfo) {
+      const slot = el("div", { class: "slot" });
+      slot.appendChild(el("span", { class: "slot-title", text: "Clip to come" }));
+      const id = "pick-" + st.key.replace(/[^\w-]/g, "-");
+      const pick = el("span", { class: "pick" });
+      pick.appendChild(el("label", { for: id, text: "Preview a file:" }));
+      const input = el("input", { type: "file", id: id, accept: "video/*" });
+      input.addEventListener("change", function () {
+        const f = input.files && input.files[0];
+        if (!f) return;
+        const frame = el("div", { class: "frame" });
+        frame.appendChild(videoElement(URL.createObjectURL(f), st));
+        slot.replaceWith(frame);
+        cap.appendChild(el("span", { class: "extra", text: "Previewing " + f.name + ". To keep it, put the file in the videos folder and set src in content.js." }));
+      });
+      pick.appendChild(input);
+      slot.appendChild(pick);
+      fig.appendChild(slot);
+      if (st.notes) cap.appendChild(el("span", { class: "extra" }, "Shot notes: " + inline(st.notes)));
+    } else {
+      const frame = el("div", { class: "frame" });
+      if (srcInfo.kind === "iframe") {
+        frame.appendChild(el("iframe", { src: srcInfo.url, title: st.title || "Video", allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen", allowfullscreen: true, loading: "lazy" }));
+        const a = el("span", { class: "extra" });
+        a.appendChild(el("a", { href: srcInfo.link, target: "_blank", rel: "noopener", text: "Video not showing? Watch it on " + srcInfo.site }));
+        cap.appendChild(a);
+      } else {
+        const v = videoElement(srcInfo.url, st);
+        v.addEventListener("error", function () {
+          cap.appendChild(el("span", { class: "extra", text: "This video file couldn’t be loaded. Check the file name in content.js matches the file in the videos folder: " + srcInfo.url }));
+        }, { once: true });
+        frame.appendChild(v);
+      }
+      fig.appendChild(frame);
+    }
+    if (st.caption) cap.appendChild(el("span", { class: "extra" }, inline(st.caption)));
+    fig.appendChild(cap);
+    box.appendChild(fig);
+  }
+
+  function renderText(st, box) {
+    if (st.title) box.appendChild(el("h3", { text: st.title }));
+    box.appendChild(el("div", { class: "prose" }, md(st.body)));
+  }
+
+  function renderActivity(st, box) {
+    if (st.title) box.appendChild(el("h3", { text: st.title }));
+    if (st.body) box.appendChild(el("div", { class: "prose" }, md(st.body)));
+    const items = st.checklist || [];
+    if (!items.length) return;
+    const saved = state.checks[st.key] || [];
+    const ul = el("ul", { class: "checklist" });
+    items.forEach(function (item, n) {
+      const id = "chk-" + st.key.replace(/[^\w-]/g, "-") + "-" + n;
+      const li = el("li");
+      const lab = el("label", { for: id });
+      const box2 = el("input", { type: "checkbox", id: id });
+      box2.checked = !!saved[n];
+      box2.addEventListener("change", function () {
+        const arr = state.checks[st.key] || [];
+        arr[n] = box2.checked;
+        state.checks[st.key] = arr;
+        saveState();
+      });
+      lab.appendChild(box2);
+      lab.appendChild(el("span", null, inline(item)));
+      li.appendChild(lab);
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  }
+
+  function exerciseShell(st, box, ctx) {
+    const ex = el("div", { class: "exercise" + (st.scored === false ? " is-prediction" : "") });
+    const label = el("div", { class: "label" + (st.scored === false ? " prediction" : "") });
+    label.textContent = st.scored === false ? "Prediction" : "Exercise " + ctx.label;
+    if (st.scored === false) label.appendChild(el("span", { class: "aside", text: "Not scored. Guess, then check." }));
+    ex.appendChild(label);
+    if (st.title) ex.appendChild(el("h3", { text: st.title }));
+    ex.appendChild(el("div", { class: "prompt" }, md(st.prompt)));
+    box.appendChild(ex);
+    return ex;
+  }
+  function hintControl(st, actions) {
+    if (!SETTINGS.showHints || !st.hint) return;
+    let shown = null;
+    const b = el("button", { type: "button", class: "link", text: "Hint" });
+    b.addEventListener("click", function () {
+      if (shown) { shown.remove(); shown = null; b.textContent = "Hint"; return; }
+      shown = el("div", { class: "hint" }, "<b>Hint.</b>" + inline(String(st.hint)));
+      actions.after(shown);
+      b.textContent = "Hide hint";
+    });
+    actions.appendChild(b);
+  }
+  function recordAnswer(st, correct, value, finished) {
+    const a = state.ans[st.key] || { tries: 0 };
+    if (!a.done) {
+      a.tries += 1;
+      if (a.tries === 1) a.firstCorrect = !!correct;
+    }
+    a.correct = !!correct;
+    a.value = value;
+    if (finished) a.done = true;
+    state.ans[st.key] = a;
+    saveState();
+    refreshChrome();
+  }
+  function feedbackBox(kind, heading, html) {
+    const f = el("div", { class: "feedback " + kind, role: "status" });
+    f.appendChild(el("strong", { text: heading }));
+    if (html) f.appendChild(el("div", { class: "prose" }, html));
+    return f;
+  }
+
+  function renderChoice(st, box, ctx) {
+    const ex = exerciseShell(st, box, ctx);
+    const options = st.type === "truefalse" ? ["True", "False"] : (st.options || []);
+    const answer = st.type === "truefalse" ? (st.answer ? 0 : 1) : Number(st.answer);
+    const prev = state.ans[st.key];
+    let selected = prev && prev.value != null ? prev.value : null;
+    let locked = !!(prev && prev.done);
+
+    const group = el("ol", { class: "options", role: "radiogroup", "aria-label": "Answer options" });
+    const btns = options.map(function (opt, n) {
+      const li = el("li");
+      const b = el("button", { type: "button", class: "option", role: "radio", "aria-checked": "false" });
+      b.appendChild(el("span", { class: "key", text: String.fromCharCode(65 + n) }));
+      b.appendChild(el("span", { class: "text" }, inline(opt)));
+      b.appendChild(el("span", { class: "mark", "aria-hidden": "true" }));
+      b.addEventListener("click", function () {
+        if (locked) return;
+        selected = n;
+        paint();
+        feedback.innerHTML = "";
+      });
+      li.appendChild(b);
+      group.appendChild(li);
+      return b;
+    });
+    ex.appendChild(group);
+
+    const actions = el("div", { class: "q-actions" });
+    const check = el("button", { type: "button", class: "btn", text: "Check answer" });
+    const reveal = el("button", { type: "button", class: "link", text: "Show the answer" });
+    reveal.hidden = true;
+    actions.appendChild(check);
+    actions.appendChild(reveal);
+    hintControl(st, actions);
+    ex.appendChild(actions);
+    const feedback = el("div");
+    ex.appendChild(feedback);
+
+    function paint(showResult) {
+      btns.forEach(function (b, n) {
+        b.setAttribute("aria-checked", n === selected ? "true" : "false");
+        b.classList.toggle("is-right", locked && n === answer);
+        b.classList.toggle("is-wrong", !!showResult && n === selected && n !== answer);
+        b.disabled = locked;
+      });
+      check.disabled = locked || selected == null;
+    }
+    function finish(correct, revealed) {
+      locked = true;
+      paint(true);
+      actions.hidden = true;
+      const hint = ex.querySelector(".hint");
+      if (hint) hint.remove();
+      let heading = correct ? "✓ Correct" : revealed ? "The answer is " + String.fromCharCode(65 + answer) : "✗ Not quite. The answer is " + String.fromCharCode(65 + answer);
+      if (st.scored === false) heading = correct ? "✓ Good prediction" : "The answer is " + String.fromCharCode(65 + answer);
+      feedback.innerHTML = "";
+      const kind = st.scored === false ? "predict" : correct ? "right" : revealed ? "info" : "wrong";
+      feedback.appendChild(feedbackBox(kind, heading, md(st.explain)));
+    }
+    check.addEventListener("click", function () {
+      if (selected == null) return;
+      const correct = selected === answer;
+      const finishedNow = correct || !SETTINGS.allowRetry || st.scored === false;
+      recordAnswer(st, correct, selected, finishedNow);
+      if (finishedNow) { finish(correct, false); return; }
+      paint(true);
+      feedback.innerHTML = "";
+      feedback.appendChild(feedbackBox("wrong", "✗ Not quite. Try again.", null));
+      reveal.hidden = false;
+    });
+    reveal.addEventListener("click", function () {
+      recordAnswer(st, false, selected, true);
+      finish(false, true);
+    });
+
+    if (locked) finish(prev.correct, !prev.correct);
+    else paint(false);
+  }
+
+  function renderNumber(st, box, ctx) {
+    const ex = exerciseShell(st, box, ctx);
+    const answer = Number(st.answer);
+    const tol = st.tolerance != null ? Number(st.tolerance) : SETTINGS.numberTolerance;
+    const prev = state.ans[st.key];
+    const id = "num-" + st.key.replace(/[^\w-]/g, "-");
+
+    const row = el("div", { class: "num-row" });
+    const lab = el("label", { for: id, text: "Your answer" });
+    lab.style.cssText = "position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)";
+    row.appendChild(lab);
+    const input = el("input", { type: "text", id: id, inputmode: "decimal", autocomplete: "off", placeholder: "?" });
+    if (prev && prev.value != null) input.value = prev.value;
+    row.appendChild(input);
+    if (st.unit) row.appendChild(el("span", { class: "unit", text: st.unit }));
+    ex.appendChild(row);
+
+    const actions = el("div", { class: "q-actions" });
+    const check = el("button", { type: "button", class: "btn", text: "Check answer" });
+    const reveal = el("button", { type: "button", class: "link", text: "Show the answer" });
+    reveal.hidden = true;
+    actions.appendChild(check);
+    actions.appendChild(reveal);
+    hintControl(st, actions);
+    ex.appendChild(actions);
+    const feedback = el("div");
+    ex.appendChild(feedback);
+
+    const answerText = fmtNumber(answer) + (st.unit && st.unit !== "times" ? " " + st.unit : "");
+    function finish(correct, revealed) {
+      input.disabled = true;
+      actions.hidden = true;
+      const hint = ex.querySelector(".hint");
+      if (hint) hint.remove();
+      feedback.innerHTML = "";
+      const heading = correct ? "✓ Correct: " + answerText : (revealed ? "The answer is " : "✗ Not quite. The answer is ") + answerText;
+      input.classList.toggle("is-right", !!correct);
+      input.classList.toggle("is-wrong", !correct && !revealed);
+      const kind = correct ? "right" : st.scored === false ? "predict" : revealed ? "info" : "wrong";
+      feedback.appendChild(feedbackBox(kind, heading, md(st.explain)));
+    }
+    function attempt() {
+      const v = parseNumber(input.value);
+      feedback.innerHTML = "";
+      if (isNaN(v)) {
+        feedback.appendChild(feedbackBox("info", "Enter a number", "<p>For example 30, 3.75 or 3e8.</p>"));
+        return;
+      }
+      const correct = isCloseEnough(v, answer, tol);
+      const finishedNow = correct || !SETTINGS.allowRetry || st.scored === false;
+      recordAnswer(st, correct, input.value, finishedNow);
+      if (finishedNow) { finish(correct, false); return; }
+      let tip = "Check your working and try again.";
+      if (v !== 0 && answer !== 0) {
+        const ratio = Math.log10(Math.abs(v / answer));
+        const k = Math.round(ratio);
+        if (k !== 0 && Math.abs(ratio - k) < 0.02) tip = "You’re out by a factor of " + fmtNumber(Math.pow(10, Math.abs(k))) + ". Check your units" + (st.unit && st.unit !== "times" ? " (the answer is in " + st.unit + ")" : "") + ".";
+        else if (Math.abs(v / answer - 2) < 0.03) tip = "You’re exactly double. Did you forget to halve the round trip?";
+        else if (Math.abs(v / answer - 0.5) < 0.015) tip = "You’re exactly half. Check whether the factor of 2 belongs here.";
+      }
+      feedback.appendChild(feedbackBox("wrong", "✗ Not quite", "<p>" + esc(tip) + "</p>"));
+      reveal.hidden = false;
+    }
+    check.addEventListener("click", attempt);
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); attempt(); } });
+    reveal.addEventListener("click", function () { recordAnswer(st, false, input.value, true); finish(false, true); });
+
+    if (prev && prev.done) finish(prev.correct, !prev.correct);
+    else if (prev && prev.tries) reveal.hidden = false;
+  }
+
+  const RENDERERS = { text: renderText, video: renderVideo, choice: renderChoice, truefalse: renderChoice, number: renderNumber, activity: renderActivity };
+  const TYPE_NAME = { text: "Reading", video: "Clip", choice: "Multiple choice", truefalse: "True or false", number: "Calculation", activity: "Activity" };
+
+  /* =========================================================
+     8. Views
+     ========================================================= */
+  function opener(numText, title, meta) {
+    const head = el("header", { class: "opener" });
+    if (numText) head.appendChild(el("div", { class: "num", "aria-hidden": "true", text: numText }));
+    head.appendChild(el("h2", { id: "sec-title", tabindex: "-1", text: title }));
+    if (meta) head.appendChild(el("p", { class: "meta", text: meta }));
+    return head;
+  }
+
+  let observer = null;
+  function renderLesson() {
+    clampPos();
+    const s = state.pos.s;
+    const sec = SECTIONS[s];
+    main.innerHTML = "";
+
+    const qCount = sec.steps.filter(function (st) { return st.isQ; }).length;
+    const vCount = sec.steps.filter(function (st) { return st.type === "video"; }).length;
+    const meta = [];
+    if (vCount) meta.push(plural(vCount, "clip", "clips"));
+    if (qCount) meta.push(plural(qCount, "exercise", "exercises"));
+    main.appendChild(opener(sec.num ? sec.num.padStart(2, "0") : "", sec.name, meta.join(" · ")));
+
+    const list = el("div", { class: "steps" });
+    if (!sec.steps.length) list.appendChild(el("p", { text: "This section has no steps yet. Add some in content.js." }));
+    let qn = 0, vn = 0;
+    sec.steps.forEach(function (st, i) {
+      const box = el("section", { class: "step", id: "step-" + s + "-" + i, "data-i": i });
+      let ctx = { label: "" };
+      if (st.isQ && st.scored !== false) { qn++; ctx.label = (sec.num ? sec.num + "." : "") + qn; }
+      if (st.type === "video") { vn++; ctx.label = (sec.num ? sec.num + "." : "") + vn; }
+      if (RENDERERS[st.type]) RENDERERS[st.type](st, box, ctx);
+      else box.appendChild(el("p", null, "This step has <code>type: \"" + esc(st.type) + "\"</code>, which isn’t recognised. Use text, video, choice, truefalse, number or activity."));
+      list.appendChild(box);
+    });
+    main.appendChild(list);
+
+    const nav = el("nav", { class: "section-nav", "aria-label": "Section navigation" });
+    const back = el("button", { type: "button", class: "link muted", text: s > 0 ? "← " + SECTIONS[s - 1].name : "", onclick: prev });
+    if (s === 0) back.style.visibility = "hidden";
+    nav.appendChild(back);
+    const lastAll = s === SECTIONS.length - 1;
+    const next = el("button", { type: "button", class: "next-block", id: "next-btn", onclick: nextStep });
+    next.appendChild(el("span", { class: "k", text: lastAll ? "Finished?" : "Next" }));
+    next.appendChild(el("span", { class: "t", text: (lastAll ? "See your results" : SECTIONS[s + 1].name) + " →" }));
+    nav.appendChild(next);
+    if (!canAdvance()) {
+      next.disabled = true;
+      nav.appendChild(el("p", { class: "gate", id: "gate-text", text: "Answer every exercise in this section to continue." }));
+    }
+    main.appendChild(nav);
+    watchSteps(sec);
+  }
+
+  // Mark readings and clips as seen once they scroll into view, and remember the reader's place
+  function watchSteps(sec) {
+    if (observer) observer.disconnect();
+    if (!("IntersectionObserver" in window)) {
+      sec.steps.forEach(function (st) { if (!st.isQ) state.seen[st.key] = true; });
+      saveState();
+      return;
+    }
+    observer = new IntersectionObserver(function (entries) {
+      let changed = false;
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        const i = +en.target.getAttribute("data-i");
+        const st = sec.steps[i];
+        if (st && !st.isQ && !state.seen[st.key]) { state.seen[st.key] = true; changed = true; }
+        if (state.pos.i !== i) { state.pos.i = i; changed = true; }
+      });
+      if (changed) { saveState(); renderContents(); }
+    }, { threshold: 0.4 });
+    main.querySelectorAll(".step").forEach(function (n) { observer.observe(n); });
+  }
+
+  function renderResults() {
+    main.innerHTML = "";
+    const qs = scoredQuestions();
+    const answered = qs.filter(function (q) { const a = state.ans[q.st.key]; return a && a.done; });
+    const right = qs.filter(function (q) { const a = state.ans[q.st.key]; return a && a.firstCorrect; });
+    const pct = qs.length ? Math.round(right.length / qs.length * 100) : 0;
+
+    main.appendChild(opener("", "Results", "Saved in this browser only."));
+    const list = el("div", { class: "steps" });
+
+    const score = el("section", { class: "step" });
+    score.appendChild(el("div", { class: "big", text: pct + "%" }));
+    score.appendChild(el("p", { text: "You got " + right.length + " of " + qs.length + " exercises right first time, and have answered " + answered.length + " so far." }));
+    list.appendChild(score);
+
+    const tableBox = el("section", { class: "step" });
+    const wrap = el("div", { class: "table-wrap" });
+    const table = el("table");
+    table.innerHTML = "<thead><tr><th>Section</th><th>Right first time</th><th>Done</th><th></th></tr></thead>";
+    const tb = el("tbody");
+    SECTIONS.forEach(function (sec, s) {
+      const sq = qs.filter(function (q) { return q.s === s; });
+      const sr = sq.filter(function (q) { const a = state.ans[q.st.key]; return a && a.firstCorrect; }).length;
+      const tr = el("tr");
+      tr.appendChild(el("td", { text: sec.title }));
+      tr.appendChild(el("td", { class: "num", text: sq.length ? sr + " of " + sq.length : "–" }));
+      const frac = sectionFraction(sec);
+      tr.appendChild(el("td", { class: "num" + (frac >= 1 ? " complete" : ""), text: frac >= 1 ? "✓ Done" : Math.round(frac * 100) + "%" }));
+      const go = el("td");
+      go.appendChild(el("button", { type: "button", class: "link", text: "Open", onclick: function () { goTo(s, 0); } }));
+      tr.appendChild(go);
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb);
+    wrap.appendChild(table);
+    tableBox.appendChild(wrap);
+    list.appendChild(tableBox);
+
+    const unanswered = qs.filter(function (q) { const a = state.ans[q.st.key]; return !a || !a.done; });
+    const missed = qs.filter(function (q) { const a = state.ans[q.st.key]; return a && a.done && !a.firstCorrect; });
+    if (unanswered.length || missed.length) {
+      const rev = el("section", { class: "step" });
+      rev.appendChild(el("h3", { text: "Worth another look" }));
+      if (unanswered.length) {
+        const p = el("p");
+        p.appendChild(document.createTextNode(plural(unanswered.length, "exercise isn’t", "exercises aren’t") + " answered yet. "));
+        p.appendChild(el("button", { type: "button", class: "link", text: "Go to the next one", onclick: function () { goTo(unanswered[0].s, unanswered[0].i); } }));
+        rev.appendChild(p);
+      }
+      if (missed.length) {
+        const ul = el("ul", { class: "prose" });
+        ul.style.paddingLeft = "1.2em";
+        missed.forEach(function (q) {
+          const li = el("li");
+          li.appendChild(el("span", null, inline(String(q.st.prompt).split("\n")[0]) + " "));
+          li.appendChild(el("button", { type: "button", class: "link", text: "Go", onclick: function () { goTo(q.s, q.i); } }));
+          ul.appendChild(li);
+        });
+        rev.appendChild(ul);
+      }
+      list.appendChild(rev);
+    }
+
+    const resetBox = el("section", { class: "step" });
+    const resetBtn = el("button", { type: "button", class: "link muted", text: "Start again and clear my answers" });
+    resetBtn.addEventListener("click", function () {
+      resetBox.innerHTML = "";
+      const c = el("div", { class: "confirm" });
+      c.appendChild(el("span", { text: "Clear every answer and start from the beginning?" }));
+      c.appendChild(el("button", { type: "button", class: "btn", text: "Clear everything", onclick: function () {
+        state = { pos: { s: 0, i: 0 }, view: "lesson", ans: {}, checks: {}, seen: {} };
+        saveState();
+        goTo(0, 0);
+      } }));
+      c.appendChild(el("button", { type: "button", class: "link", text: "Cancel", onclick: renderResults }));
+      resetBox.appendChild(c);
+    });
+    resetBox.appendChild(resetBtn);
+    list.appendChild(resetBox);
+    main.appendChild(list);
+  }
+
+  function validate() {
+    const issues = [];
+    const ids = {};
+    SECTIONS.forEach(function (sec) {
+      if (ids[sec.id]) issues.push(["err", "Two sections share the id \"" + sec.id + "\". Give each section a different id."]);
+      ids[sec.id] = true;
+      if (!sec.steps.length) issues.push(["err", sec.title + " has no steps."]);
+      sec.steps.forEach(function (st, i) {
+        const where = sec.title + ", step " + (i + 1);
+        if (!RENDERERS[st.type]) issues.push(["err", where + ": unknown type \"" + st.type + "\"."]);
+        if (st.type === "choice") {
+          const n = (st.options || []).length;
+          if (n < 2) issues.push(["err", where + ": a choice question needs at least 2 options."]);
+          if (!(Number.isInteger(st.answer) && st.answer >= 0 && st.answer < n)) issues.push(["err", where + ": answer should be the position of the right option, counting from 0 (between 0 and " + (n - 1) + ")."]);
+        }
+        if (st.type === "truefalse" && typeof st.answer !== "boolean") issues.push(["err", where + ": answer should be true or false (no quotes)."]);
+        if (st.type === "number" && !isFinite(Number(st.answer))) issues.push(["err", where + ": answer should be a number."]);
+        if (st.isQ && !st.prompt) issues.push(["err", where + ": question has no prompt."]);
+        if (st.isQ && !st.explain) issues.push(["warn", where + ": no explanation is shown after answering."]);
+      });
+    });
+    return issues;
+  }
+
+  function renderOutline() {
+    main.innerHTML = "";
+    const allSteps = [];
+    SECTIONS.forEach(function (sec) { sec.steps.forEach(function (st) { allSteps.push(st); }); });
+    const vids = allSteps.filter(function (st) { return st.type === "video"; });
+    const missingVids = vids.filter(function (st) { return !String(st.src || "").trim(); });
+    const qs = allSteps.filter(function (st) { return st.isQ; });
+
+    main.appendChild(opener("", "Author view", SECTIONS.length + " sections · " + qs.length + " exercises · " + (vids.length - missingVids.length) + " of " + vids.length + " clips added"));
+    const list = el("div", { class: "steps" });
+
+    const top = el("section", { class: "step" });
+    const back = el("p");
+    back.appendChild(el("button", { type: "button", class: "link", text: "← Back to the lesson", onclick: function () { goTo(state.pos.s, state.pos.i); } }));
+    top.appendChild(back);
+    const issues = validate();
+    if (issues.length) {
+      top.appendChild(el("h3", { text: "Things to fix in content.js" }));
+      const ul = el("ul", { class: "issues" });
+      issues.forEach(function (it) { ul.appendChild(el("li", { class: it[0], text: it[1] })); });
+      top.appendChild(ul);
+    } else {
+      top.appendChild(el("p", { text: "No problems found in content.js." }));
+    }
+    list.appendChild(top);
+
+    SECTIONS.forEach(function (sec, s) {
+      const block = el("section", { class: "step o-sec" });
+      block.appendChild(el("h3", null, esc(sec.title) + " <small>#" + esc(sec.id) + "</small>"));
+      sec.steps.forEach(function (st, i) {
+        const row = el("div", { class: "o-step" });
+        row.appendChild(el("span", { class: "o-type", text: TYPE_NAME[st.type] || st.type }));
+        const ob = el("div");
+        ob.appendChild(el("div", null, "<strong>" + inline(st.title || st.prompt || "(untitled)") + "</strong>"));
+        let detail = "";
+        if (st.type === "video") {
+          detail = String(st.src || "").trim() ? "Source: " + esc(st.src) : '<span class="o-missing">No clip yet.</span> ' + (st.notes ? inline(st.notes) : "");
+          if (st.duration) detail += " · target length " + esc(st.duration);
+        } else if (st.type === "choice") {
+          detail = (st.options || []).map(function (o, n) { return n === st.answer ? '<span class="ok">' + String.fromCharCode(65 + n) + ". " + inline(o) + " ✓</span>" : String.fromCharCode(65 + n) + ". " + inline(o); }).join(" · ");
+        } else if (st.type === "truefalse") {
+          detail = 'Answer: <span class="ok">' + (st.answer ? "True" : "False") + "</span>";
+        } else if (st.type === "number") {
+          const tol = st.tolerance != null ? st.tolerance : SETTINGS.numberTolerance;
+          detail = 'Answer: <span class="ok">' + esc(fmtNumber(Number(st.answer))) + (st.unit ? " " + esc(st.unit) : "") + "</span> (±" + Math.round(tol * 1000) / 10 + "%)";
+        } else if (st.type === "activity") {
+          detail = (st.checklist || []).length + " checklist items";
+        }
+        if (st.scored === false) detail += " · not scored";
+        if (st.isQ && st.hint) detail += " · has hint";
+        if (detail) ob.appendChild(el("div", { class: "o-detail" }, detail));
+        row.appendChild(ob);
+        row.appendChild(el("button", { type: "button", class: "link", text: "Open", onclick: function () { goTo(s, i); } }));
+        block.appendChild(row);
+      });
+      list.appendChild(block);
+    });
+    main.appendChild(list);
+  }
+
+  /* =========================================================
+     9. Navigation
+     ========================================================= */
+  function setHash(name) {
+    if (location.hash.slice(1) !== name) {
+      try { history.replaceState(null, "", "#" + name); } catch (e) { location.hash = name; }
+    }
+  }
+  function refreshChrome() { renderContents(); updateGate(); }
+  function updateGate() {
+    const next = document.getElementById("next-btn");
+    if (!next || state.view !== "lesson") return;
+    const ok = canAdvance();
+    next.disabled = !ok;
+    const g = document.getElementById("gate-text");
+    if (ok && g) g.remove();
+  }
+  function render() {
+    if (observer && state.view !== "lesson") observer.disconnect();
+    if (state.view === "results") { renderResults(); setHash("results"); }
+    else if (state.view === "outline") { renderOutline(); setHash("outline"); }
+    else { state.view = "lesson"; renderLesson(); setHash(SECTIONS[state.pos.s].id); }
+    renderContents();
+    saveState();
+  }
+  function goTo(s, i) {
+    state.view = "lesson";
+    state.pos = { s: s, i: i || 0 };
+    render();
+    scrollToStep(i || 0);
+  }
+  function scrollToStep(i) {
+    const target = i > 0 ? document.getElementById("step-" + state.pos.s + "-" + i) : null;
+    if (target) {
+      target.scrollIntoView({ block: "start" });
+      target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
+    } else {
+      window.scrollTo({ top: 0 });
+      const h = document.getElementById("sec-title");
+      if (h) h.focus({ preventScroll: true });
+    }
+  }
+  function showView(v) {
+    state.view = v;
+    render();
+    window.scrollTo({ top: 0 });
+    closeContents();
+  }
+  function nextStep() {
+    if (!canAdvance()) return;
+    if (state.pos.s < SECTIONS.length - 1) goTo(state.pos.s + 1, 0);
+    else showView("results");
+  }
+  function prev() {
+    if (state.pos.s > 0) goTo(state.pos.s - 1, 0);
+  }
+  function fromHash() {
+    const h = location.hash.slice(1);
+    if (!h) return false;
+    if (h === "results") { state.view = "results"; return true; }
+    if (h === "outline") { state.view = "outline"; return true; }
+    const s = SECTIONS.findIndex(function (x) { return x.id === h; });
+    if (s >= 0) {
+      if (!(state.view === "lesson" && state.pos.s === s)) state.pos = { s: s, i: 0 };
+      state.view = "lesson";
+      return true;
+    }
+    return false;
+  }
+
+  document.getElementById("go-results").addEventListener("click", function () { showView("results"); });
+  document.getElementById("go-outline").addEventListener("click", function () { showView("outline"); });
+  const toggle = document.getElementById("contents-toggle");
+  toggle.addEventListener("click", function () {
+    const on = document.body.classList.toggle("show-contents");
+    toggle.setAttribute("aria-expanded", on ? "true" : "false");
+    if (on) window.scrollTo({ top: 0 });
+  });
+  window.addEventListener("hashchange", function () { if (fromHash()) render(); });
+
+  /* =========================================================
+     10. Start
+     ========================================================= */
+  function start(snapshot) {
+    loadState();
+    if (snapshot && snapshot.pos) state = Object.assign(state, snapshot);
+    if (state.view === "outline" && location.hash.slice(1) !== "outline") state.view = "lesson";
+    fromHash();
+    clampPos();
+    render();
+    if (state.view === "lesson" && state.pos.i > 0) {
+      const resumeAt = state.pos.i;
+      requestAnimationFrame(function () { scrollToStep(resumeAt); });
+    }
+  }
+  if (window.claude && window.claude.hot && window.claude.hot.snapshot) {
+    window.claude.hot.snapshot(function () { return state; });
+  }
+  if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start);
+  else start((window.claude && window.claude.hot && window.claude.hot.data) || {});
+})();
+</script>
+</body>
+</html>
