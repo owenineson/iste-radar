@@ -303,12 +303,6 @@ A strong target beyond $R_{max}$ appears much closer than it really is: a **seco
       title: "5. Antennas and beamwidth",
       steps: [
         {
-          type: "video",
-          title: "Pointing the beam",
-          src: "",
-          duration: "1:30",
-        },
-        {
           type: "text",
           title: "Key idea: bigger antenna, narrower beam",
           body: `Beamwidth depends on the ratio of wavelength to antenna size:
@@ -360,12 +354,6 @@ $$ Δx ≈ R θ   (θ in radians) $$
       title: "6. Doppler",
       steps: [
         {
-          type: "video",
-          title: "From sirens to speed guns",
-          src: "",
-          duration: "2:00",
-        },
-        {
           type: "text",
           title: "Key idea: a moving target shifts the echo frequency",
           body: `The target receives a shifted signal, then re-radiates it as a moving source, so the shift is doubled:
@@ -412,12 +400,6 @@ $$ f_d = \\frac{2 v_r}{λ}     v_r = v cos θ $$
       id: "sampling",
       title: "7. Doppler sampling",
       steps: [
-        {
-          type: "video",
-          title: "PRF is a sample rate",
-          src: "",
-          duration: "1:15",
-        },
         {
           type: "text",
           title: "Key idea: Nyquist applies to radar",
