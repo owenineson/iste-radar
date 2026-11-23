@@ -7,37 +7,31 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=STIX+Two+Text:ital@0;1&display=swap" rel="stylesheet">
-<!--
-  LESSON ENGINE
-  You normally don't need to edit this file. All lesson content lives in content.js.
-  To change fonts, colours or spacing, edit the tokens in the :root block below.
--->
 <style>
 :root {
-  /* Layout: a textbook page. Contents in the left margin, one reading column, sections scroll continuously.
-     Black on white for structure; colour only where it carries meaning. */
+
   --paper: #ffffff;
   --ink: #141414;
   --muted: #666b70;
   --hair: #e1e3e5;
   --wash: #f4f5f6;
 
-  --accent: #1f5fbf;        /* buttons, links, your selected answer, notes */
+  --accent: #1f5fbf;
   --accent-soft: #ebf2fc;
-  --good: #1a7f37;          /* correct answers, completed sections */
+  --good: #1a7f37;
   --good-soft: #e9f6ed;
-  --bad: #c42b2b;           /* wrong answers */
+  --bad: #c42b2b;
   --bad-soft: #fdeeee;
-  --warn: #a35c00;          /* hints and predictions */
+  --warn: #a35c00;
   --warn-soft: #fff4e2;
-  --signal: #1f5fbf;        /* keyboard focus outline */
+  --signal: #1f5fbf;
 
   --text: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
   --math: "STIX Two Text", "Cambria Math", "Times New Roman", serif;
 
   --measure: 40rem;
-  --margin: 210px;          /* contents column */
+  --margin: 210px;
   --gutter: 72px;
   --frame: calc(var(--margin) + var(--gutter) + var(--measure));
   --body: 1.125rem;
@@ -60,7 +54,6 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
 h1, h2, h3 { margin: 0; text-wrap: balance; font-family: var(--display); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em; }
 p { margin: 0; }
 
-/* ---------- Masthead ---------- */
 .masthead { border-bottom: 1px solid var(--ink); }
 .masthead-inner {
   max-width: calc(var(--frame) + 64px); margin: 0 auto; padding: 16px 32px;
@@ -70,7 +63,6 @@ p { margin: 0; }
 .masthead .sub { font-size: var(--small); color: var(--muted); }
 .masthead .tools { margin-left: auto; display: flex; gap: 20px; }
 
-/* ---------- Text buttons and buttons ---------- */
 .link {
   background: none; border: 0; padding: 0; cursor: pointer; color: var(--accent);
   font-size: var(--small); font-weight: 600;
@@ -87,13 +79,11 @@ p { margin: 0; }
 .btn[disabled] { background: var(--hair); border-color: var(--hair); color: var(--muted); cursor: not-allowed; }
 .contents-toggle { display: none; }
 
-/* ---------- Page ---------- */
 .page {
   max-width: calc(var(--frame) + 64px); margin: 0 auto; padding: 56px 32px 120px;
   display: grid; grid-template-columns: var(--margin) minmax(0, var(--measure)); gap: var(--gutter);
 }
 
-/* ---------- Contents ---------- */
 .contents { position: sticky; top: 32px; align-self: start; max-height: calc(100vh - 64px); overflow-y: auto; }
 .contents h2 { font-size: var(--tiny); font-weight: 600; color: var(--muted); margin-bottom: 12px; letter-spacing: 0; }
 .contents ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
@@ -109,13 +99,11 @@ p { margin: 0; }
 .contents li.current .c-num, .contents li.current .c-name { color: var(--accent); }
 .contents-foot { margin-top: 20px; display: grid; gap: 10px; justify-items: start; }
 
-/* ---------- Section opener ---------- */
 .opener { border-top: 4px solid var(--ink); padding-top: 18px; display: grid; gap: 6px; }
 .opener .num { font-family: var(--display); font-size: 4.5rem; font-weight: 300; line-height: 0.9; letter-spacing: -0.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
 .opener h2 { font-size: 2.5rem; letter-spacing: -0.025em; }
 .opener .meta { font-size: var(--small); color: var(--muted); margin-top: 6px; }
 
-/* ---------- Steps ---------- */
 .steps { display: grid; gap: 56px; margin-top: 48px; }
 .step { min-width: 0; display: grid; gap: 16px; scroll-margin-top: 24px; }
 .step > h3 { font-size: 1.45rem; }
@@ -138,7 +126,6 @@ sub, sup { font-size: 0.7em; line-height: 0; }
 .label.prediction { color: var(--warn); }
 .label .aside { font-family: var(--text); font-weight: 400; color: var(--muted); margin-left: 8px; }
 
-/* ---------- Figures (video) ---------- */
 figure { margin: 0; display: grid; gap: 10px; }
 .frame { position: relative; aspect-ratio: 16 / 9; width: 100%; background: #000; }
 .frame video, .frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -155,7 +142,6 @@ figcaption .extra { color: var(--muted); }
 .slot .pick { font-size: var(--tiny); background: var(--paper); padding: 4px 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
 .slot input[type="file"] { font-size: var(--tiny); max-width: 220px; }
 
-/* ---------- Exercises ---------- */
 .exercise { border-left: 3px solid var(--accent); padding-left: 24px; display: grid; gap: 16px; }
 .exercise.is-prediction { border-left-color: var(--warn); }
 .exercise .prompt { font-size: 1.2rem; line-height: 1.5; font-weight: 500; }
@@ -206,7 +192,6 @@ figcaption .extra { color: var(--muted); }
 .feedback.predict { border-left-color: var(--warn); background: var(--warn-soft); }
 .feedback.predict > strong { color: var(--warn); }
 
-/* ---------- Activity ---------- */
 .checklist { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hair); }
 .checklist li { border-bottom: 1px solid var(--hair); }
 .checklist label { display: grid; grid-template-columns: 22px 1fr; gap: 14px; padding: 11px 0; cursor: pointer; align-items: start; }
@@ -219,7 +204,6 @@ figcaption .extra { color: var(--muted); }
 }
 .checklist input:checked + span { color: var(--muted); }
 
-/* ---------- Section navigation ---------- */
 .section-nav { margin-top: 80px; border-top: 1px solid var(--ink); padding-top: 16px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
 .section-nav > .link { justify-self: start; }
 .next-block { background: none; border: 0; padding: 0; cursor: pointer; text-align: right; display: grid; gap: 2px; justify-items: end; }
@@ -231,7 +215,6 @@ figcaption .extra { color: var(--muted); }
 .next-block[disabled]:hover .t { text-decoration: none; }
 .gate { font-size: var(--small); color: var(--warn); grid-column: 1 / -1; text-align: right; }
 
-/* ---------- Results and author view ---------- */
 .big { font-family: var(--display); font-size: 5rem; font-weight: 300; line-height: 1; letter-spacing: -0.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
 .table-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: var(--small); }
@@ -253,7 +236,6 @@ td.complete { color: var(--good); font-weight: 600; }
 .o-step .o-detail .ok { color: var(--good); font-weight: 600; }
 .o-step .o-missing { color: var(--warn); font-weight: 700; }
 
-/* ---------- Small screens ---------- */
 @media (max-width: 900px) {
   .masthead .sub { display: none; }
   .contents-toggle { display: inline; }
@@ -290,21 +272,17 @@ td.complete { color: var(--good); font-weight: 600; }
     <h2>Contents</h2>
     <ol id="contents-list"></ol>
     <div class="contents-foot">
-      <button class="link muted" type="button" id="go-outline">Author view</button>
+      <button class="link muted" type="button" id="go-outline">Outline</button>
     </div>
   </nav>
   <main id="main" aria-live="polite"></main>
 </div>
 
-<!-- Your lesson content. Edit content.js to change anything the learner sees. -->
 <script src="content.js"></script>
 <script>
 (function () {
   "use strict";
 
-  /* =========================================================
-     1. Setup
-     ========================================================= */
   const COURSE = window.COURSE;
   const main = document.getElementById("main");
   if (!COURSE || !Array.isArray(COURSE.sections)) {
@@ -320,6 +298,21 @@ td.complete { color: var(--good); font-weight: 600; }
     saveProgress: true,
   }, COURSE.settings || {});
 
+  const ANALYTICS = COURSE.analytics || {};
+  if (ANALYTICS.umamiWebsiteId) {
+    const sc = document.createElement("script");
+    sc.defer = true;
+    sc.src = ANALYTICS.umamiScript || "https://cloud.umami.is/script.js";
+    sc.setAttribute("data-website-id", ANALYTICS.umamiWebsiteId);
+    if (ANALYTICS.domains) sc.setAttribute("data-domains", ANALYTICS.domains);
+    document.head.appendChild(sc);
+  }
+  function track(name, data) {
+    try {
+      if (window.umami && typeof window.umami.track === "function") window.umami.track(name, data);
+    } catch (e) {}
+  }
+
   const theme = COURSE.theme || {};
   if (theme.accent) document.documentElement.style.setProperty("--accent", theme.accent);
   if (theme.signal) document.documentElement.style.setProperty("--signal", theme.signal);
@@ -332,7 +325,6 @@ td.complete { color: var(--good); font-weight: 600; }
   const SECTIONS = COURSE.sections.map(function (sec, s) {
     const id = String(sec.id || "section-" + (s + 1)).replace(/[^A-Za-z0-9-]/g, "-");
     const title = sec.title || "Section " + (s + 1);
-    // A title like "3. Pulses" is split into its number and its name
     const m = title.match(/^(\d+)[.)]\s+(.*)$/);
     return {
       id: id,
@@ -340,14 +332,11 @@ td.complete { color: var(--good); font-weight: 600; }
       num: m ? m[1] : "",
       name: m ? m[2] : title,
       steps: (sec.steps || []).map(function (st, i) {
-        return Object.assign({}, st, { key: st.id || id + ":" + i, isQ: QUESTION_TYPES.indexOf(st.type) >= 0 });
+        return Object.assign({}, st, { key: st.id || id + ":" + i, isQ: QUESTION_TYPES.indexOf(st.type) >= 0, secId: id });
       }),
     };
   });
 
-  /* =========================================================
-     2. State (saved in this browser only)
-     ========================================================= */
   const STORE_KEY = "lesson:" + (COURSE.id || COURSE.title || "course");
   let state = { pos: { s: 0, i: 0 }, view: "lesson", ans: {}, checks: {}, seen: {} };
 
@@ -356,11 +345,11 @@ td.complete { color: var(--good); font-weight: 600; }
     try {
       const raw = window.localStorage.getItem(STORE_KEY);
       if (raw) state = Object.assign(state, JSON.parse(raw));
-    } catch (e) { /* storage unavailable: carry on without it */ }
+    } catch (e) {}
   }
   function saveState() {
     if (!SETTINGS.saveProgress) return;
-    try { window.localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    try { window.localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
   }
   function clampPos() {
     const s = Math.min(Math.max(0, state.pos.s | 0), SECTIONS.length - 1);
@@ -368,13 +357,9 @@ td.complete { color: var(--good); font-weight: 600; }
     state.pos = { s: s, i: Math.min(Math.max(0, state.pos.i | 0), Math.max(0, n - 1)) };
   }
 
-  /* =========================================================
-     3. Text formatting (a small Markdown-like syntax)
-     ========================================================= */
   function esc(t) {
     return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
-  // Read a {...} group starting at position i (s[i] === "{"); returns [inner, endIndex]
   function readGroup(s, i) {
     let depth = 0;
     for (let j = i; j < s.length; j++) {
@@ -383,7 +368,6 @@ td.complete { color: var(--good); font-weight: 600; }
     }
     return [s.slice(i + 1), s.length];
   }
-  // Maths: \frac{a}{b}, x_{sub}, x^{sup}, x_d, R^4
   function mathHTML(src) {
     let out = "";
     let i = 0;
@@ -473,10 +457,6 @@ td.complete { color: var(--good); font-weight: 600; }
     return e;
   }
 
-  /* =========================================================
-     4. Numbers
-     ========================================================= */
-  // Accepts "30", "30 km", "3,430", "3.4e3", "3.4 × 10^3", "3.4x10^3"
   function parseNumber(str) {
     const s = String(str).trim().replace(/,/g, "").replace(/−/g, "-").replace(/\s+/g, "");
     const m = s.match(/^([-+]?(?:\d+\.?\d*|\.\d+))(?:[eE]([-+]?\d+)|[×xX*]10\^?([-+]?\d+))?/);
@@ -495,9 +475,6 @@ td.complete { color: var(--good); font-weight: 600; }
     return Math.abs(value - answer) <= Math.abs(answer) * tol;
   }
 
-  /* =========================================================
-     5. Progress helpers
-     ========================================================= */
   function stepDone(st) {
     if (st.isQ) { const a = state.ans[st.key]; return !!(a && a.done); }
     return !!state.seen[st.key];
@@ -519,9 +496,6 @@ td.complete { color: var(--good); font-weight: 600; }
   }
   function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
 
-  /* =========================================================
-     6. Contents
-     ========================================================= */
   function renderContents() {
     const list = document.getElementById("contents-list");
     list.innerHTML = "";
@@ -544,9 +518,6 @@ td.complete { color: var(--good); font-weight: 600; }
     document.getElementById("contents-toggle").setAttribute("aria-expanded", "false");
   }
 
-  /* =========================================================
-     7. Step renderers
-     ========================================================= */
   function videoSource(src) {
     const s = String(src || "").trim();
     if (!s) return null;
@@ -660,6 +631,7 @@ td.complete { color: var(--good); font-weight: 600; }
     b.addEventListener("click", function () {
       if (shown) { shown.remove(); shown = null; b.textContent = "Hint"; return; }
       shown = el("div", { class: "hint" }, "<b>Hint.</b>" + inline(String(st.hint)));
+      track("Hint opened", { exercise: st.exLabel, section: st.secId });
       actions.after(shown);
       b.textContent = "Hide hint";
     });
@@ -669,7 +641,10 @@ td.complete { color: var(--good); font-weight: 600; }
     const a = state.ans[st.key] || { tries: 0 };
     if (!a.done) {
       a.tries += 1;
-      if (a.tries === 1) a.firstCorrect = !!correct;
+      if (a.tries === 1) {
+        a.firstCorrect = !!correct;
+        track("Exercise answered", { exercise: st.exLabel, section: st.secId, correct: !!correct });
+      }
     }
     a.correct = !!correct;
     a.value = value;
@@ -838,9 +813,6 @@ td.complete { color: var(--good); font-weight: 600; }
   const RENDERERS = { text: renderText, video: renderVideo, choice: renderChoice, truefalse: renderChoice, number: renderNumber, activity: renderActivity };
   const TYPE_NAME = { text: "Reading", video: "Clip", choice: "Multiple choice", truefalse: "True or false", number: "Calculation", activity: "Activity" };
 
-  /* =========================================================
-     8. Views
-     ========================================================= */
   function opener(numText, title, meta) {
     const head = el("header", { class: "opener" });
     if (numText) head.appendChild(el("div", { class: "num", "aria-hidden": "true", text: numText }));
@@ -870,6 +842,7 @@ td.complete { color: var(--good); font-weight: 600; }
       const box = el("section", { class: "step", id: "step-" + s + "-" + i, "data-i": i });
       let ctx = { label: "" };
       if (st.isQ && st.scored !== false) { qn++; ctx.label = (sec.num ? sec.num + "." : "") + qn; }
+      if (st.isQ) st.exLabel = ctx.label ? "Exercise " + ctx.label : sec.name + " " + (i + 1);
       if (st.type === "video") { vn++; ctx.label = (sec.num ? sec.num + "." : "") + vn; }
       if (RENDERERS[st.type]) RENDERERS[st.type](st, box, ctx);
       else box.appendChild(el("p", null, "This step has <code>type: \"" + esc(st.type) + "\"</code>, which isn’t recognised. Use text, video, choice, truefalse, number or activity."));
@@ -894,7 +867,6 @@ td.complete { color: var(--good); font-weight: 600; }
     watchSteps(sec);
   }
 
-  // Mark readings and clips as seen once they scroll into view, and remember the reader's place
   function watchSteps(sec) {
     if (observer) observer.disconnect();
     if (!("IntersectionObserver" in window)) {
@@ -1030,7 +1002,7 @@ td.complete { color: var(--good); font-weight: 600; }
     const missingVids = vids.filter(function (st) { return !String(st.src || "").trim(); });
     const qs = allSteps.filter(function (st) { return st.isQ; });
 
-    main.appendChild(opener("", "Author view", SECTIONS.length + " sections · " + qs.length + " exercises · " + (vids.length - missingVids.length) + " of " + vids.length + " clips added"));
+    main.appendChild(opener("", "Outline", SECTIONS.length + " sections · " + qs.length + " exercises · " + (vids.length - missingVids.length) + " of " + vids.length + " clips added"));
     const list = el("div", { class: "steps" });
 
     const top = el("section", { class: "step" });
@@ -1082,9 +1054,6 @@ td.complete { color: var(--good); font-weight: 600; }
     main.appendChild(list);
   }
 
-  /* =========================================================
-     9. Navigation
-     ========================================================= */
   function setHash(name) {
     if (location.hash.slice(1) !== name) {
       try { history.replaceState(null, "", "#" + name); } catch (e) { location.hash = name; }
@@ -1130,9 +1099,16 @@ td.complete { color: var(--good); font-weight: 600; }
     render();
     window.scrollTo({ top: 0 });
     closeContents();
+    if (v === "results") {
+      const qs = scoredQuestions();
+      const right = qs.filter(function (q) { const a = state.ans[q.st.key]; return a && a.firstCorrect; }).length;
+      const done = qs.filter(function (q) { const a = state.ans[q.st.key]; return a && a.done; }).length;
+      track("Results viewed", { score: qs.length ? Math.round(right / qs.length * 100) : 0, answered: done });
+    }
   }
   function nextStep() {
     if (!canAdvance()) return;
+    track("Section finished", { section: SECTIONS[state.pos.s].id });
     if (state.pos.s < SECTIONS.length - 1) goTo(state.pos.s + 1, 0);
     else showView("results");
   }
@@ -1163,9 +1139,6 @@ td.complete { color: var(--good); font-weight: 600; }
   });
   window.addEventListener("hashchange", function () { if (fromHash()) render(); });
 
-  /* =========================================================
-     10. Start
-     ========================================================= */
   function start(snapshot) {
     loadState();
     if (snapshot && snapshot.pos) state = Object.assign(state, snapshot);

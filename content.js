@@ -1,117 +1,52 @@
-/* =====================================================================
-   COURSE CONTENT
-   ---------------------------------------------------------------------
-   This is the only file you need to edit to change the lesson.
-   Everything the learner sees (text, videos, questions, answers) is here.
-   index.html reads it and builds the page. See README.md for a full guide.
-
-   QUICK REFERENCE
-
-   A course has SECTIONS. Each section is one scrolling page showing its STEPS in order.
-
-   Step types:
-     { type: "text",     title, body }
-     { type: "video",    title, src, poster, captions, notes, duration }   (duration is only shown in Author view)
-     { type: "choice",   prompt, options: [...], answer: 0, hint, explain }
-     { type: "truefalse",prompt, answer: true,  explain }
-     { type: "number",   prompt, answer: 30, unit: "km", tolerance: 0.03, hint, explain }
-     { type: "activity", title, body, checklist: [...] }
-
-   Optional on any question:  scored: false   (practice / prediction, not counted)
-
-   Video "src" can be:
-     ""                                  -> shows a placeholder with your shot notes
-     "videos/01-cave.mp4"                -> a file in the videos folder (recommended)
-     "https://www.youtube.com/watch?v=…" -> YouTube (works when hosted on your own site)
-     "https://vimeo.com/123456"          -> Vimeo   (works when hosted on your own site)
-
-   Writing text ("body", "prompt", "explain", "hint"):
-     Blank line          new paragraph
-     - item              bullet list (every line starts "- ")
-     1. item             numbered list
-     > text              highlighted note box
-     **bold**  *italic*  [link text](https://example.com)
-     $R = ct/2$          inline maths
-     $$ R = ct/2 $$      maths on its own line (a block)
-     In maths: x_{max} gives a subscript, R^{4} a superscript.
-               A single character works without braces: f_d, R^4.
-     Plain HTML also works if you need it.
-   ===================================================================== */
-
 window.COURSE = {
-  id: "radar-from-the-cave-v1", // change this if you want everyone's saved progress to reset
+  id: "radar-from-the-cave-v1",
   title: "Radar!",
   subtitle: "Radar but audible",
 
   settings: {
-    requireAnswerToContinue: false, // true = learners must answer every question in a section before moving to the next
-    allowRetry: true,               // let learners try again after a wrong answer
-    showHints: true,                // show the "Show hint" button where a hint exists
-    numberTolerance: 0.03,          // default accepted error for number answers (0.03 = 3%)
-    saveProgress: true,             // remember answers in the learner's browser
+    requireAnswerToContinue: false,
+    allowRetry: true,
+    showHints: true,
+    numberTolerance: 0.03,
+    saveProgress: true,
   },
 
-  // Optional colour overrides. Leave as null to use the built-in palette.
   theme: {
-    accent: null, // colour of the main buttons, e.g. "#000000"
-    signal: null, // colour used for keyboard focus outlines
+    accent: null,
+    signal: null,
+  },
+
+  analytics: {
+    umamiWebsiteId: "10cdc139-2a0f-4805-aa8a-1098edffb3db",
+    umamiScript: "https://cloud.umami.is/script.js",
   },
 
   sections: [
-    /* ---------------------------------------------------------------- */
     {
-      id: "warm-up",
-      title: "Warm-up",
+      id: "introduction",
+      title: "Introduction",
       steps: [
         {
           type: "text",
           title: "Before you watch",
-          body: `This lesson mixes short video clips with questions, a hands-on activity and a final quiz.
+          body: `[Placeholder: a sentence or two introducing the lesson and what it's about.]
 
-Start with three quick predictions. They aren't scored. Guess first, then see how close you were. Each one comes back later in the lesson.
+[Placeholder: what learners will be able to do by the end.]
 
-> You'll need a calculator for some questions. Number answers accept small rounding differences.`,
-        },
-        {
-          type: "choice",
-          scored: false,
-          prompt: "If radar used sound instead of radio waves, roughly how long would the echo from an aircraft 100 km away take to come back?",
-          options: ["About 0.6 seconds", "About 1 minute", "About 10 minutes", "About an hour"],
-          answer: 2,
-          explain: `The echo travels 200 km in total. At 343 m/s that takes about 583 s, nearly 10 minutes. A radio echo makes the same trip in 0.67 milliseconds.`,
-        },
-        {
-          type: "choice",
-          scored: false,
-          prompt: "A sound wave and a radio wave both have a wavelength of 3 cm. Which has the higher frequency?",
-          options: [
-            "The sound wave",
-            "The radio wave, by about 1,000 times",
-            "The radio wave, by about 875,000 times",
-            "They're the same",
-          ],
-          answer: 2,
-          explain: `Frequency equals speed divided by wavelength. Radio travels about 875,000 times faster than sound, so at the same wavelength its frequency is about 875,000 times higher: 10 GHz against 11.4 kHz.`,
-        },
-        {
-          type: "choice",
-          scored: false,
-          prompt: "A target moves twice as far away from a radar. How much weaker does its echo get?",
-          options: ["2 times weaker", "4 times weaker", "8 times weaker", "16 times weaker"],
-          answer: 3,
-          explain: `The signal spreads out on the way to the target and again on the way back, so the echo falls with the fourth power of range: $2^4 = 16$. You'll see why in segment 5.`,
+[Placeholder: how the lesson works, for example short clips followed by exercises, then a hands-on activity and a quiz.]
+
+> [Placeholder: anything learners need before starting, such as a calculator.]`,
         },
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "echo",
       title: "1. Echo ranging",
       steps: [
         {
           type: "video",
-          title: "The cave clap",
+          title: "Video 1",
           src: "https://youtu.be/TptzGXf_TyA"
         },
         {
@@ -145,21 +80,18 @@ $$ R = \\frac{v t}{2} $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "waves",
       title: "2. Sound vs radio waves",
       steps: [
         {
           type: "video",
-          title: "Same wavelengths, different frequencies",
-          src: "",
-          duration: "1:30",
-          notes: "Two frequency scales side by side, audio and radio, joined by a shared wavelength ruler. Bats use short wavelengths to find insects. Sound needs a medium; radio doesn't.",
+          title: "Video 2",
+          src: "https://youtu.be/kqs3jiV1BfY"
         },
         {
           type: "text",
-          title: "Key idea: wavelength drives behaviour",
+          title: "Key idea: wavelength is resolution",
           body: `Every wave obeys the same relation:
 
 $$ v = f λ $$
@@ -203,7 +135,6 @@ Wavelength sets antenna size, beam width and which objects reflect strongly. Obj
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "pulses",
       title: "3. Pulses",
@@ -211,9 +142,8 @@ Wavelength sets antenna size, beam width and which objects reflect strongly. Obj
         {
           type: "video",
           title: "Short pulses, long pulses",
-          src: "",
+          src: "https://youtu.be/pGxjl1OKWYQ",
           duration: "2:00",
-          notes: "A sharp clap separates two cave walls; a long shout blurs them and hides a nearby echo. Pulse train timeline. Duplexer. Duty cycle and peak vs average power.",
         },
         {
           type: "text",
@@ -261,7 +191,6 @@ $$ D = τ × PRF     P_{avg} = P_{peak} × D $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "prf",
       title: "4. PRF and range ambiguity",
@@ -271,7 +200,6 @@ $$ D = τ × PRF     P_{avg} = P_{peak} × D $$
           title: "Which clap was that?",
           src: "",
           duration: "1:30",
-          notes: "Clap slowly: each echo follows its clap. Clap fast: echoes land between later claps. Uneven rhythm: you can match them again (PRF stagger). Timeline with a second-trip echo placed at the wrong range.",
         },
         {
           type: "text",
@@ -316,7 +244,6 @@ A strong target beyond $R_{max}$ appears much closer than it really is: a **seco
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "radar-equation",
       title: "5. The radar equation",
@@ -326,7 +253,6 @@ A strong target beyond $R_{max}$ appears much closer than it really is: a **seco
           title: "The 1/R⁴ problem",
           src: "",
           duration: "1:30",
-          notes: "A friend at the far wall hears your shout (one way); the echo back to you is far fainter (two ways). Expanding sphere out, small sphere back. 1/R² vs 1/R⁴ graph. A megawatt out, half a picowatt back.",
         },
         {
           type: "text",
@@ -385,7 +311,6 @@ $$ P_r = \\frac{P_t G^2 λ^2 σ}{(4π)^3 R^4} $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "antennas",
       title: "6. Antennas and beamwidth",
@@ -395,7 +320,6 @@ $$ P_r = \\frac{P_t G^2 λ^2 σ}{(4π)^3 R^4} $$
           title: "Pointing the beam",
           src: "",
           duration: "1:30",
-          notes: "Dish with main lobe and sidelobes. Parabolic microphones use the same geometry. Phased array: a row of emitters with staggered timing tilts the wavefront. Mic arrays in smart speakers.",
         },
         {
           type: "text",
@@ -444,7 +368,6 @@ $$ Δx ≈ R θ   (θ in radians) $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "doppler",
       title: "7. Doppler",
@@ -454,7 +377,6 @@ $$ Δx ≈ R θ   (θ in radians) $$
           title: "From sirens to speed guns",
           src: "",
           duration: "2:00",
-          notes: "Ambulance passing, wavefronts bunching and stretching. Radar version on a spectrogram. Play a radar Doppler audio recording if available. Horseshoe bats adjust their call pitch to compensate for their own flight speed.",
         },
         {
           type: "text",
@@ -499,7 +421,6 @@ $$ f_d = \\frac{2 v_r}{λ}     v_r = v cos θ $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "sampling",
       title: "8. Doppler sampling",
@@ -509,7 +430,6 @@ $$ f_d = \\frac{2 v_r}{λ}     v_r = v cos θ $$
           title: "PRF is a sample rate",
           src: "",
           duration: "1:15",
-          notes: "CD audio at 44.1 kHz can only capture up to 22.05 kHz. A sine wave sampled too slowly aliases. Wagon-wheel strobe. Trade-off table: low, medium and high PRF.",
         },
         {
           type: "text",
@@ -567,7 +487,6 @@ $$ R_{max} × v_{max} = \\frac{c λ}{8} $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "chirps",
       title: "9. Chirps and pulse compression",
@@ -577,7 +496,6 @@ $$ R_{max} × v_{max} = \\frac{c λ}{8} $$
           title: "Bats did it first",
           src: "",
           duration: "1:30",
-          notes: "Spectrograms side by side: a slowed-down pipistrelle FM sweep and a radar chirp. Correlation animation: the echo slides past the reference and a sharp spike appears. Whistle a rising note in the cave.",
         },
         {
           type: "text",
@@ -616,7 +534,6 @@ $$ ΔR = \\frac{c}{2B}     compression ratio = τ B $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "close",
       title: "10. Recap",
@@ -626,7 +543,6 @@ $$ ΔR = \\frac{c}{2B}     compression ratio = τ B $$
           title: "Back to the cave",
           src: "",
           duration: "1:00",
-          notes: "Recap lines on screen. 5 to 10 second shots of applications: air traffic control, weather radar, speed gun, car radar, SAR satellite, ground-penetrating radar. Final clap, cut to a rotating dish.",
         },
         {
           type: "text",
@@ -656,7 +572,6 @@ $$ ΔR = \\frac{c}{2B}     compression ratio = τ B $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "hands-on",
       title: "Hands-on activity",
@@ -703,7 +618,6 @@ $$ ΔR = \\frac{c}{2B}     compression ratio = τ B $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "problems",
       title: "Problem set",
@@ -754,7 +668,6 @@ $$ ΔR = \\frac{c}{2B}     compression ratio = τ B $$
       ],
     },
 
-    /* ---------------------------------------------------------------- */
     {
       id: "quiz",
       title: "Recap quiz",
