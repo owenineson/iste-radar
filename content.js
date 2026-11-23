@@ -355,6 +355,12 @@ $$ Δx ≈ R θ   (θ in radians) $$
       steps: [
         {
           type: "text",
+          title: "Measuring speed",
+          body: `So, we know how to measure how far away a target is - now we want to where it's traveling and how far. To do this we need to know about the Doppler effect. `
+        },
+        
+        {
+          type: "text",
           title: "Key idea: a moving target shifts the echo frequency",
           body: `The target receives a shifted signal, then re-radiates it as a moving source, so the shift is doubled:
 

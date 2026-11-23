@@ -522,7 +522,10 @@ td.complete { color: var(--good); font-weight: 600; }
     const s = String(src || "").trim();
     if (!s) return null;
     let m = s.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
-    if (m) return { kind: "iframe", url: "https://www.youtube-nocookie.com/embed/" + m[1] + "?rel=0", link: "https://www.youtube.com/watch?v=" + m[1], site: "YouTube" };
+    if (m) {
+      const origin = /^https?:/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "";
+      return { kind: "iframe", yt: m[1], url: "https://www.youtube-nocookie.com/embed/" + m[1] + "?rel=0&enablejsapi=1" + origin, link: "https://www.youtube.com/watch?v=" + m[1], site: "YouTube" };
+    }
     m = s.match(/vimeo\.com\/(?:video\/)?(\d+)/);
     if (m) return { kind: "iframe", url: "https://player.vimeo.com/video/" + m[1], link: "https://vimeo.com/" + m[1], site: "Vimeo" };
     return { kind: "file", url: s };
@@ -531,6 +534,80 @@ td.complete { color: var(--good); font-weight: 600; }
     const v = el("video", { controls: true, playsinline: true, preload: "metadata", src: url, poster: st.poster || null });
     if (st.captions) v.appendChild(el("track", { kind: "captions", src: st.captions, srclang: "en", label: "English", default: true }));
     return v;
+  }
+
+  const videoSent = {};
+  function videoEvent(st, label, what) {
+    const k = st.key + ":" + what;
+    if (videoSent[k]) return;
+    videoSent[k] = true;
+    track("Video " + what, { clip: "Clip " + label, section: st.secId });
+  }
+
+  function watchVideoElement(v, st, label) {
+    v.addEventListener("play", function () { videoEvent(st, label, "started"); });
+    v.addEventListener("timeupdate", function () {
+      if (v.duration && v.currentTime / v.duration >= 0.5) videoEvent(st, label, "halfway");
+    });
+    v.addEventListener("ended", function () {
+      videoEvent(st, label, "halfway");
+      videoEvent(st, label, "finished");
+    });
+  }
+
+  let ytReady = null;
+  function loadYouTubeApi() {
+    if (ytReady) return ytReady;
+    ytReady = new Promise(function (resolve) {
+      if (window.YT && window.YT.Player) { resolve(window.YT); return; }
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function () {
+        if (typeof prev === "function") prev();
+        resolve(window.YT);
+      };
+      const s = document.createElement("script");
+      s.src = "https://www.youtube.com/iframe_api";
+      s.async = true;
+      document.head.appendChild(s);
+    });
+    return ytReady;
+  }
+
+  function watchYouTube(iframe, st, label) {
+    loadYouTubeApi().then(function (YT) {
+      function attach(tries) {
+        if (!iframe.isConnected) {
+          if (tries < 60) requestAnimationFrame(function () { attach(tries + 1); });
+          return;
+        }
+        let timer = null;
+        const stop = function () { if (timer) { clearInterval(timer); timer = null; } };
+        const player = new YT.Player(iframe, {
+          events: {
+            onStateChange: function (e) {
+              if (e.data === YT.PlayerState.PLAYING) {
+                videoEvent(st, label, "started");
+                stop();
+                timer = setInterval(function () {
+                  try {
+                    if (!iframe.isConnected) { stop(); return; }
+                    const d = player.getDuration(), t = player.getCurrentTime();
+                    if (d > 0 && t / d >= 0.5) { videoEvent(st, label, "halfway"); stop(); }
+                  } catch (err) { stop(); }
+                }, 1000);
+              } else if (e.data === YT.PlayerState.ENDED) {
+                stop();
+                videoEvent(st, label, "halfway");
+                videoEvent(st, label, "finished");
+              } else {
+                stop();
+              }
+            },
+          },
+        });
+      }
+      attach(0);
+    }).catch(function () {});
   }
 
   function renderVideo(st, box, ctx) {
@@ -563,12 +640,15 @@ td.complete { color: var(--good); font-weight: 600; }
     } else {
       const frame = el("div", { class: "frame" });
       if (srcInfo.kind === "iframe") {
-        frame.appendChild(el("iframe", { src: srcInfo.url, title: st.title || "Video", allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen", allowfullscreen: true, loading: "lazy", referrerpolicy: "strict-origin-when-cross-origin" }));
+        const iframe = el("iframe", { src: srcInfo.url, title: st.title || "Video", allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen", allowfullscreen: true, loading: "lazy", referrerpolicy: "strict-origin-when-cross-origin" });
+        frame.appendChild(iframe);
+        if (srcInfo.yt && ANALYTICS.umamiWebsiteId) watchYouTube(iframe, st, ctx.label);
         const a = el("span", { class: "extra" });
         a.appendChild(el("a", { href: srcInfo.link, target: "_blank", rel: "noopener", text: "Video not showing? Watch it on " + srcInfo.site }));
         cap.appendChild(a);
       } else {
         const v = videoElement(srcInfo.url, st);
+        watchVideoElement(v, st, ctx.label);
         v.addEventListener("error", function () {
           cap.appendChild(el("span", { class: "extra", text: "This video file couldn’t be loaded. Check the file name in content.js matches the file in the videos folder: " + srcInfo.url }));
         }, { once: true });
