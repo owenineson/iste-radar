@@ -28,14 +28,14 @@ window.COURSE = {
       steps: [
         {
           type: "text",
-          title: "Before you watch",
-          body: `[Placeholder: a sentence or two introducing the lesson and what it's about.]
+          title: "Before you start",
+          body: `This short course will introduce you to some of the fundamental concepts underpinning radar, a technology essential to modern life.
 
-[Placeholder: what learners will be able to do by the end.]
+          By the end of this course, the goal is for you to have a conceptual understanding of the basics and be able to perform some simple calculations.
 
-[Placeholder: how the lesson works, for example short clips followed by exercises, then a hands-on activity and a quiz.]
+          Each section feature a mix of text and video content relevant to each topic. You can study these before answering a few questions.
 
-> [Placeholder: anything learners need before starting, such as a calculator.]`,
+          > You may need a calculator for some of the questions!`,
         },
       ],
     },
@@ -52,30 +52,30 @@ window.COURSE = {
         {
           type: "text",
           title: "Key idea: range from echo time",
-          body: `A pulse goes out, reflects and comes back. The round trip is twice the distance, so:
+          body: `A pulse travels out, reflects, and comes back. The round trip is twice the distance, so:
 
 $$ R = \\frac{v t}{2} $$
 
 <p class="formula-key">R is range, v is wave speed, t is round-trip time.</p>
 
-- Sound in air: 343 m/s. An echo from a wall 50 m away takes 0.29 s.
+- Speed of sound in air: 343 m/s. An echo from a wall 50 m away takes 0.29 s.
 - Radio: 300,000,000 m/s. The same echo takes 0.33 µs.
-- Each microsecond of radar delay means 150 m of range.`,
+- For each microsecond, a radar pulse can travel 150m.`,
         },
         {
           type: "number",
-          prompt: "You clap in a cave and hear the echo 0.4 s later. Taking the speed of sound as 343 m/s, how far away is the wall?",
+          prompt: "Your standing in a cave and clap. 0.4s later you hear the echo. How far away is the wall?",
           answer: 68.6,
           unit: "m",
-          hint: "The sound travels to the wall and back, so halve the total distance.",
+          hint: "The sound needs to travel to the wall and back, so half the total distance.",
           explain: `$R = 343 × 0.4 / 2 = 68.6$ m.`,
         },
         {
           type: "choice",
-          prompt: "A radar echo returns 1 µs after the pulse was sent. How far away is the target?",
+          prompt: "A radar pulse returns after 1 µs. How far away is the target.",
           options: ["0.17 mm", "150 m", "300 m", "150 km"],
           answer: 1,
-          explain: `$R = (3 × 10^{8} × 1 × 10^{-6}) / 2 = 150$ m. The 0.17 mm option is what sound would travel in the same time.`,
+          explain: `$R = (3 × 10^{8} × 1 × 10^{-6}) / 2 = 150$ m.`,
         },
       ],
     },
@@ -103,15 +103,15 @@ Radar and audible sound use similar wavelengths at very different frequencies:
 - 3 cm: sound at 11.4 kHz, radio at 10 GHz (X-band, marine and military radar)
 - 4 mm: bat calls around 86 kHz, radio at 77 GHz (car radar)
 
-Wavelength sets antenna size, beam width and which objects reflect strongly. Objects much smaller than the wavelength barely reflect.`,
+Wavelength controls antenna size, beam width, and which objects reflect strongly. If an object is much smaller than the wavelength it'll hardly reflect.`,
         },
         {
           type: "number",
-          prompt: "What frequency of sound in air has a wavelength of 10 cm? (Use 343 m/s.)",
+          prompt: "If a sound has a wavelength of 10cm, what is it's frequency?",
           answer: 3430,
           unit: "Hz",
-          hint: "Rearrange v = fλ to get f = v / λ. Remember 10 cm is 0.1 m.",
-          explain: `$f = 343 / 0.1 = 3,430$ Hz, or 3.43 kHz. A 3 GHz radar has the same wavelength.`,
+          hint: "Rearrange v = fλ to get f = v / λ.",
+          explain: `$f = 343 / 0.1 = 3,430$ Hz, or 3.43 kHz. This is the same wavelength as S-band radar (3 GHz)`,
         },
         {
           type: "choice",
