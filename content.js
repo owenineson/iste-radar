@@ -192,61 +192,8 @@ $$ D = τ × PRF     P_{avg} = P_{peak} × D $$
     },
 
     {
-      id: "prf",
-      title: "4. PRF and range ambiguity",
-      steps: [
-        {
-          type: "video",
-          title: "Which clap was that?",
-          src: "",
-          duration: "1:30",
-        },
-        {
-          type: "text",
-          title: "Key idea: the next pulse mustn't leave too early",
-          body: `If the next pulse goes out before the last echo returns, the radar can't tell which pulse the echo belongs to.
-
-$$ R_{max} = \\frac{c}{2 · PRF} $$
-
-- 300 Hz: 500 km
-- 1 kHz: 150 km
-- 10 kHz: 15 km
-
-A strong target beyond $R_{max}$ appears much closer than it really is: a **second-trip echo**. Changing the PRF from burst to burst (stagger) keeps real echoes in place while second-trip echoes jump around.`,
-        },
-        {
-          type: "number",
-          prompt: "A radar has a PRF of 1 kHz. What is its maximum unambiguous range?",
-          answer: 150,
-          unit: "km",
-          explain: `$R_{max} = 3 × 10^{8} / (2 × 1,000) = 150,000$ m, which is 150 km.`,
-        },
-        {
-          type: "number",
-          prompt: "That same radar sees a mountain 180 km away. At what range does the mountain appear on its display?",
-          answer: 30,
-          unit: "km",
-          hint: "The echo arrives after the next pulse has gone out. Subtract one maximum range.",
-          explain: `$180 − 150 = 30$ km. The echo returns after the next pulse has gone, so the radar measures its delay from the wrong pulse.`,
-        },
-        {
-          type: "choice",
-          prompt: "How does PRF stagger expose second-trip echoes?",
-          options: [
-            "Second-trip echoes get louder",
-            "Real echoes stay at the same range while second-trip echoes jump around",
-            "Second-trip echoes disappear completely",
-            "It changes their Doppler shift",
-          ],
-          answer: 1,
-          explain: `A real target's delay from its own pulse doesn't depend on PRF. A second-trip echo's apparent range depends on the gap between pulses, so it moves whenever the PRF changes.`,
-        },
-      ],
-    },
-
-    {
       id: "range",
-      title: "5. Range",
+      title: "4. Range",
       steps: [
         {
           type: "video",
@@ -308,12 +255,52 @@ $$ P_r = \\frac{P_t G^2 λ^2 σ}{(4π)^3 R^4} $$
           answer: 1,
           explain: `The warning receiver hears the radar's outgoing signal directly. The radar has to wait for an echo that has spread out twice.`,
         },
+        {
+          type: "text",
+          title: "Key idea: the next pulse mustn't leave too early",
+          body: `If the next pulse goes out before the last echo returns, the radar can't tell which pulse the echo belongs to.
+
+$$ R_{max} = \\frac{c}{2 · PRF} $$
+
+- 300 Hz: 500 km
+- 1 kHz: 150 km
+- 10 kHz: 15 km
+
+A strong target beyond $R_{max}$ appears much closer than it really is: a **second-trip echo**. Changing the PRF from burst to burst (stagger) keeps real echoes in place while second-trip echoes jump around.`,
+        },
+        {
+          type: "number",
+          prompt: "A radar has a PRF of 1 kHz. What is its maximum unambiguous range?",
+          answer: 150,
+          unit: "km",
+          explain: `$R_{max} = 3 × 10^{8} / (2 × 1,000) = 150,000$ m, which is 150 km.`,
+        },
+        {
+          type: "number",
+          prompt: "That same radar sees a mountain 180 km away. At what range does the mountain appear on its display?",
+          answer: 30,
+          unit: "km",
+          hint: "The echo arrives after the next pulse has gone out. Subtract one maximum range.",
+          explain: `$180 − 150 = 30$ km. The echo returns after the next pulse has gone, so the radar measures its delay from the wrong pulse.`,
+        },
+        {
+          type: "choice",
+          prompt: "How does PRF stagger expose second-trip echoes?",
+          options: [
+            "Second-trip echoes get louder",
+            "Real echoes stay at the same range while second-trip echoes jump around",
+            "Second-trip echoes disappear completely",
+            "It changes their Doppler shift",
+          ],
+          answer: 1,
+          explain: `A real target's delay from its own pulse doesn't depend on PRF. A second-trip echo's apparent range depends on the gap between pulses, so it moves whenever the PRF changes.`,
+        },
       ],
     },
 
     {
       id: "antennas",
-      title: "6. Antennas and beamwidth",
+      title: "5. Antennas and beamwidth",
       steps: [
         {
           type: "video",
@@ -370,7 +357,7 @@ $$ Δx ≈ R θ   (θ in radians) $$
 
     {
       id: "doppler",
-      title: "7. Doppler",
+      title: "6. Doppler",
       steps: [
         {
           type: "video",
@@ -423,7 +410,7 @@ $$ f_d = \\frac{2 v_r}{λ}     v_r = v cos θ $$
 
     {
       id: "sampling",
-      title: "8. Doppler sampling",
+      title: "7. Doppler sampling",
       steps: [
         {
           type: "video",
