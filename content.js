@@ -245,13 +245,13 @@ A strong target beyond $R_{max}$ appears much closer than it really is: a **seco
     },
 
     {
-      id: "radar-equation",
-      title: "5. The radar equation",
+      id: "range",
+      title: "5. Range",
       steps: [
         {
           type: "video",
-          title: "The 1/R⁴ problem",
-          src: "",
+          title: "The problem with range",
+          src: "https://youtu.be/5u0gclmiHWI",
           duration: "1:30",
         },
         {
